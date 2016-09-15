@@ -2,7 +2,7 @@
 
 namespace gateways;
 
-class UserGateway extends AbstractGateway
+class UserGateway extends AbstractGateway implements GatewayInterface
 {
 	/**
 	 * @inheritdoc

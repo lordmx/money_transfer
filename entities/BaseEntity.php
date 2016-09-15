@@ -17,6 +17,14 @@ class BaseEntity implements Entity
 	}
 
 	/**
+	 * @param string $field
+	 */
+	public function addDirty($field)
+	{
+		$this->dirty[] = $field;
+	}
+
+	/**
 	 * @return $array
 	 */
 	public function getDirty()

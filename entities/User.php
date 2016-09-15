@@ -73,9 +73,13 @@ class User extends BaseEntity
 	 */
 	public function toMap()
 	{
-		return [
-			'id' => $this->getId(),
-			'accessToken' => $this->getAccessToken(),
-		];
+		if ($this->validate()) {
+			return [
+				'id' => $this->getId(),
+				'accessToken' => $this->getAccessToken(),
+			];
+		}
+
+		return [];
 	}
 }

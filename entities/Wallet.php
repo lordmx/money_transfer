@@ -102,10 +102,14 @@ class Wallet extends BaseEntity
      */
     public function toMap()
     {
-        return [
-            'id' => $this->getId(),
-            'title' => $this->getTitle(),
-            'currencyId' => $this->getCurrencyId(),
-        ];
+        if ($this->validate()) {
+            return [
+                'id' => $this->getId(),
+                'title' => $this->getTitle(),
+                'currencyId' => $this->getCurrencyId(),
+            ];
+        }
+
+        return [];
     }
 }

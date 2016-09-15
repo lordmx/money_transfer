@@ -4,16 +4,17 @@ namespace repositories;
 
 use entities\Entity;
 use dto\Dto;
-use gateways\Gateway;
+use gateways\GatewayInterface;
+use repositories\exceptions;
 
 abstract class AbstractRepository
 {
 	protected $gateway;
 
 	/**
-	 * @param Gateway $gateway
+	 * @param GatewayInterface $gateway
 	 */
-	public function __construct(Gateway $gateway)
+	public function __construct(GatewayInterface $gateway)
 	{
 		$this->gateway = $gateway;
 	}
@@ -30,10 +31,7 @@ abstract class AbstractRepository
 			return null;
 		}
 
-		$entity = $this->createEntity();
-		$entity->load($map);
-
-		return $entity;
+		return $this->populateEntity($map);
 	}
 
 	/**
@@ -64,9 +62,7 @@ abstract class AbstractRepository
 		$items = $this->gateway->findByCriteria($criteria, $limit, $offset);
 
 		foreach ($items as $map) {
-			$entity = $this->createEntity();
-			$entity->load($map);
-			$result[] = $entity;
+			$result[] = $this->populateEntity($map);
 		}
 
 		return $result;
@@ -88,9 +84,15 @@ abstract class AbstractRepository
 	/**
 	 * @param Entity $entity
 	 * @return Entity
+	 * @throws ValidationException
 	 */
 	public function save(Entity $entity)
 	{
+		if (!$entity->validate()) {
+			$errors = $entity->getErrors();
+			throw new ValidationException(reset($errors));
+		}
+
 		if ($entity->getId() > 0) {
 			$dirty = $entity->getDirty();
 
@@ -110,6 +112,18 @@ abstract class AbstractRepository
 	public function delete(Entity $entity)
 	{
 		$this->gateway->delete($entity->getId());
+		return $entity;
+	}
+
+	/**
+	 * @param array $map
+	 * @return Entity
+	 */
+	protected function populateEntity(array $map)
+	{
+		$entity = $this->createEntity();
+		$entity->load($map);
+
 		return $entity;
 	}
 

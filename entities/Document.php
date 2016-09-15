@@ -103,6 +103,10 @@ class Document extends BaseEntity
             $this->errors[] = 'Wrong status given';
         }
 
+        if (!$this->createdAt) {
+            $this->errors[] = 'Date of creation must be specified';
+        }
+
         if (!$this->type) {
             $this->errors[] = 'Type of the document is empty or missing';
         }
@@ -297,16 +301,20 @@ class Document extends BaseEntity
      */
     public function toMap()
     {
-        return [
-            'id' => $this->getId(),
-            'createdAt' => $this->getCreatedAt()->format(DATE_W3C),
-            'executedAt' => $this->getExecutedAt() ? $this->getExecutedAt()->format(DATE_W3C) : null,
-            'status' => $this->getStatus(),
-            'context' => $this->getContext(),
-            'notice' => $this->getNotice(),
-            'type' => $this->getType()->getName(),
-            'creatorId' => $this->getCreator()->getId(),
-            'executorId' => $this->getExecutor() ? $this->getExecutor()->getId() : null,
-        ];
+        if ($this->validate()) {
+            return [
+                'id' => $this->getId(),
+                'createdAt' => $this->getCreatedAt()->format(DATE_W3C),
+                'executedAt' => $this->getExecutedAt() ? $this->getExecutedAt()->format(DATE_W3C) : null,
+                'status' => $this->getStatus(),
+                'context' => json_decode($this->getContext(), true),
+                'notice' => $this->getNotice(),
+                'type' => $this->getType()->getName(),
+                'creatorId' => $this->getCreator()->getId(),
+                'executorId' => $this->getExecutor() ? $this->getExecutor()->getId() : null,
+            ];
+        }
+
+        return [];
     }
 }
