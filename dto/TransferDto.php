@@ -24,7 +24,17 @@ class TransferDto implements DtoInterface
 	/**
 	 * @var int
 	 */
-	private $userId;
+	private $sourceUserId;
+
+	/**
+	 * @var int
+	 */
+	private $targetUserId;
+
+	/**
+	 * @var string
+	 */
+	private $notice;
 
 	/**
 	 * @return int
@@ -53,9 +63,25 @@ class TransferDto implements DtoInterface
 	/**
 	 * @return int
 	 */
-	public function getUserId()
+	public function getSourceUserId()
 	{
-		return $this->userId;
+		return $this->sourceUserId;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getTargetUserId()
+	{
+		return $this->targetUserId;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getNotice()
+	{
+		return $this->notice;
 	}
 
 	/**
@@ -85,9 +111,25 @@ class TransferDto implements DtoInterface
 	/**
 	 * @param int $userId
 	 */
-	public function setUserId($userId)
+	public function setSourceUserId($userId)
 	{
-		$this->userId = $userId;
+		$this->sourceUserId = $userId;
+	}
+
+	/**
+	 * @param int $userId
+	 */
+	public function setTargetUserId($userId)
+	{
+		$this->targetUserId = $userId;
+	}
+
+	/**
+	 * @param string $notice
+	 */
+	public function setNotice($notice)
+	{
+		$this->notice = $notice;
 	}
 
 	/**
@@ -98,8 +140,10 @@ class TransferDto implements DtoInterface
 		return [
 			'source_wallet_id' => $this->getSourceWalletId(),
 			'target_wallet_id' => $this->getTargetWalletId(),
+			'source_user_id' => $this->getSourceUserId(),
+			'target_user_id' => $this->getTargetUserId(),
 			'amount' => $this->getAmount(),
-			'user_id' => $this->getUserId(),
+			'notice' => $this->getNotice(),
 		];
 	}
 
@@ -130,10 +174,20 @@ class TransferDto implements DtoInterface
 			throw new ValidationException('Amount must be greater than null');
 		}
 
-		if (!empty($map['user_id'])) {
-			$dto->setUserId((int)$map['user_id']);
+		if (!empty($map['source_user_id'])) {
+			$dto->setSourceUserId((int)$map['source_user_id']);
 		} else {
-			throw new ValidationException('User ID is empty or missing');
+			throw new ValidationException('Source user ID is empty or missing');
+		}
+
+		if (!empty($map['target_user_id'])) {
+			$dto->setTargetUserId((int)$map['target_user_id']);
+		} else {
+			throw new ValidationException('Target user ID is empty or missing');
+		}
+
+		if (!empty($map['notice'])) {
+			$dto->setNotice($map['notice']);
 		}
 
 		return $dto;

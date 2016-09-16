@@ -20,11 +20,6 @@ class Transaction extends BaseEntity
 	private $createdAt;
 
 	/**
-	 * @var PaymentRule
-	 */
-	private $paymentRule;
-
-	/**
 	 * @var Wallet
 	 */
 	private $wallet;
@@ -50,10 +45,6 @@ class Transaction extends BaseEntity
 
 		if (!$this->createdAt) {
 			$this->errors[] = 'Date of creation must be specified';
-		}
-
-		if (!$this->paymentRule) {
-			$this->errors[] = 'Payment rule is empty or missing';
 		}
 
 		if (!$this->wallet) {
@@ -96,14 +87,6 @@ class Transaction extends BaseEntity
 	}
 
 	/**
-	 * @return PaymentRule
-	 */
-	public function getPaymentRule()
-	{
-		return $this->paymentRule;
-	}
-
-	/**
 	 * @return Wallet
 	 */
 	public function getWallet()
@@ -141,14 +124,6 @@ class Transaction extends BaseEntity
 	public function setCreatedAt(\DateTime $createdAt)
 	{
 		$this->createdAt = $createdAt;
-	}
-
-	/**
-	 * @param PaymentRule $paymentRule
-	 */
-	public function setPaymentRule(PaymentRule $paymentRule)
-	{
-		$this->paymentRule = $paymentRule;
 	}
 
 	/**
@@ -205,7 +180,6 @@ class Transaction extends BaseEntity
 				'amount' => $this->getAmount(),
 				'walletId' => $this->getWallet()->getId(),
 				'documentId' => $this->getDocument()->getId(),
-				'paymentRuleId' => $this->getPaymentRule()->getId(),
 			];
 		}
 

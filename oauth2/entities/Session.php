@@ -1,6 +1,6 @@
 <?php
 
-namespace entities\oauth2;
+namespace oauth2\entities;
 
 use entities\User;
 use entities\BaseEntity;
@@ -26,6 +26,11 @@ class Session extends BaseEntity
 	 * @var User
 	 */
 	private $user;
+
+	/**
+	 * @var Scope[]
+	 */
+	private $scopes = [];
 
 	/**
 	 * @inheritdoc
@@ -80,6 +85,14 @@ class Session extends BaseEntity
 	}
 
 	/**
+	 * @return Scope[]
+	 */
+	public function getScopes()
+	{
+		return $this->scopes;
+	}
+
+	/**
 	 * @param int $id
 	 */
 	public function setId($id)
@@ -109,6 +122,14 @@ class Session extends BaseEntity
 	public function setUser(User $user)
 	{
 		$this->user = $user;
+	}
+
+	/**
+	 * @param Scope[] $scopes
+	 */
+	public function setScopes(array $scopes)
+	{
+		$this->scopes = $scopes;
 	}
 
 	/**

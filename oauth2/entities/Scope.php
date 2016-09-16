@@ -1,6 +1,6 @@
 <?php
 
-namespace entities\oauth2;
+namespace oauth2\entities;
 
 use entities\BaseEntity;
 

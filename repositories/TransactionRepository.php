@@ -5,7 +5,8 @@ namespace repositories;
 use gateways\GatewayInterface;
 use entities\Transaction;
 use entities\User;
-use entities\PaymentRule;
+use entities\Wallet;
+use entities\Document;
 
 class TransactionRepository extends AbstractRepository implements RepositoryInterface
 {
@@ -15,21 +16,21 @@ class TransactionRepository extends AbstractRepository implements RepositoryInte
 	private $userRepository;
 
 	/**
-	 * @var PaymentRuleRepository
+	 * @var WalletRepository
 	 */
-	private $paymentRuleRepository;
+	private $walletRepository;
 
 	/**
 	 * @param GatewayInterface $gateway
 	 * @param UserRepository $userRepository
-	 * @param PaymentRuleRepository $paymentRuleRepository
+	 * @param WalletRepository $paymentRuleRepository
 	 */
-	public function __construct(GatewayInterface $gateway, UserRepository $userRepository, PaymentRuleRepository $paymentRuleRepository)
+	public function __construct(GatewayInterface $gateway, UserRepository $userRepository, WalletRepository $walletRepository)
 	{
 		parent::__construct($gateway);
 
 		$this->userRepository = $userRepository;
-		$this->paymentRuleRepository = $paymentRuleRepository;
+		$this->walletRepository = $walletRepository;
 	}
 
 	/**
@@ -38,6 +39,33 @@ class TransactionRepository extends AbstractRepository implements RepositoryInte
 	protected function createEntity()
 	{
 		return new Transaction();
+	}
+
+	/**
+	 * @param Document $document
+	 * @return Transaction[]
+	 */
+	public function findByDocument(Document $document)
+	{
+		$criteria = ['documentId' => $document->getId()];
+		$rows = $this->gateway->findByCriteria($criteria);
+		$result = [];
+
+		foreach ($rows as $row) {
+			$result[] = $this->populateEntity($row);
+		}
+
+		return $result;
+	}
+
+	/**
+	 * @param User $user
+	 * @param Wallet $wallet
+	 * @return float
+	 */
+	public function getBalanceFor(User $user, Wallet $wallet)
+	{
+		return $this->gateway->getBalanceFor($user->getId(), $wallet->getId());
 	}
 
 	/**
@@ -54,10 +82,10 @@ class TransactionRepository extends AbstractRepository implements RepositoryInte
 			throw new IntegrityException('User is empty or missing');
 		}
 
-		if (isset($map['paymentRuleId'])) {
-			$this->setPaymentRule($this->getPaymentRule($map['paymentRuleId']));
+		if (isset($map['walletId'])) {
+			$this->setWallet($this->getWallet($map['walletId']));
 		} else {
-			throw new IntegrityException('Payment rule is empty or missing');
+			throw new IntegrityException('Wallet is empty or missing');
 		}
 	}
 
@@ -78,18 +106,18 @@ class TransactionRepository extends AbstractRepository implements RepositoryInte
 	}
 
 	/**
-	 * @param int $paymentRuleId
-	 * @return PaymentRule
+	 * @param int $walletId
+	 * @return Wallet
 	 * @throws IntegrityException
 	 */
-	private function getPaymentRule($paymentRuleId)
+	private function getWallet($walletId)
 	{
-		$paymentRule = $this->paymentRuleRepository->findById((int)$paymentRuleId);
+		$wallet = $this->walletRepository->findById((int)$walletId);
 
-		if (!$paymentRule) {
-			throw new IntegrityException('Wrong payment rule given');
+		if (!$wallet) {
+			throw new IntegrityException('Wrong wallet given');
 		}
 
-		return $paymentRule;
+		return $wallet;
 	}
 }

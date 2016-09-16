@@ -22,12 +22,7 @@ class Exchange extends BaseEntity
 	/**
 	 * @var float
 	 */
-	private $incomingRate;
-
-	/**
-	 * @var float
-	 */
-	private $outcomingRate;
+	private $rate;
 
 	/**
 	 * @inheritdoc
@@ -42,13 +37,18 @@ class Exchange extends BaseEntity
 			$this->errors[] = 'Target currency ISO code is missing or empty';
 		}
 
-		if (!is_null($this->incomingRate) && $this->incomingRate <= 0) {
-			$this->errors[] = 'Incoming rate must be greater than null';
+		if (!is_null($this->rate) && $this->rate <= 0) {
+			$this->errors[] = 'Rate must be greater than null';
 		}
+	}
 
-		if (!is_null($this->outcomingRate) && $this->outcomingRate <= 0) {
-			$this->errors[] = 'Outcoming rate must be greater than null';
-		}
+	/**
+	 * @param float $amount
+	 * @return float
+	 */
+	public function calc($amount)
+	{
+		return $amount * $this->rate;
 	}
 
 	/**
@@ -78,17 +78,9 @@ class Exchange extends BaseEntity
 	/**
 	 * @return float
 	 */
-	public function getIncomingRate()
+	public function getRate()
 	{
-		return $this->incomingRate;
-	}
-
-	/**
-	 * @return float
-	 */
-	public function getOutcomingRate()
-	{
-		return $this->outcomingRate;
+		return $this->rate;
 	}
 
 	/**
@@ -118,17 +110,9 @@ class Exchange extends BaseEntity
 	/**
 	 * @param float $rate
 	 */
-	public function setOutcomingRate($rate)
+	public function setRate($rate)
 	{
-		$this->outcomingRate = $rate;
-	}
-
-	/**
-	 * @param float $rate
-	 */
-	public function setIncomingRate($rate)
-	{
-		$this->incomingRate = $rate;
+		$this->rate = $rate;
 	}
 
 	/**
@@ -148,12 +132,8 @@ class Exchange extends BaseEntity
 			$this->setTargetCurrencyId($map['targetCurrencyId']);
 		}
 
-		if (isset($map['incomingRate'])) {
-			$this->setIncomingRate($map['incomingRate']);
-		}
-
-		if (isset($map['outcomingRate'])) {
-			$this->setOutcomingRate($map['outcomingRate']);
+		if (isset($map['rate'])) {
+			$this->setRate($map['rate']);
 		}
 	}
 
@@ -167,8 +147,7 @@ class Exchange extends BaseEntity
 				'id' => $this->getId(),
 				'sourceCurrencyId' => $this->getSourceCurrencyId(),
 				'targetCurrencyId' => $this->getTargetCurrencyId(),
-				'incomingRate' => $this->getIncomingRate(),
-				'outcomingRate' => $this->getOutcomingRate(),
+				'rate' => $this->getRate(),
 			];
 		}
 

@@ -6,10 +6,19 @@ use entities\Entity;
 use dto\Dto;
 use gateways\GatewayInterface;
 use repositories\exceptions;
+use cache\CacheInterface;
 
 abstract class AbstractRepository
 {
+	/**
+	 * @var GatewayInterface
+	 */
 	protected $gateway;
+
+	/**
+	 * @var CacheInterface
+	 */
+	protected $cacher;
 
 	/**
 	 * @param GatewayInterface $gateway
@@ -113,6 +122,22 @@ abstract class AbstractRepository
 	{
 		$this->gateway->delete($entity->getId());
 		return $entity;
+	}
+
+	/**
+	 * @return CacheInterface|null
+	 */
+	public function getCacher()
+	{
+		return $this->cacher;
+	}
+
+	/**
+	 * @param CacheInterface $cacher
+	 */
+	public function setCacher(CacheInterface $cacher)
+	{
+		$this->cacher = $cacher;
 	}
 
 	/**

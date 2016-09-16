@@ -2,7 +2,7 @@
 
 namespace repositories\oauth2;
 
-use entities\oauth2\Scope;
+use oauth2\entities\Scope;
 use repositories\AbstractRepository;
 use repositories\RepositoryInterface;
 

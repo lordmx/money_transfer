@@ -11,6 +11,8 @@ class Document extends BaseEntity
     const STATUS_COMPLETED = 'completed';
     const STATUS_ERROR = 'error';
 
+    const TYPE_TRANSFER = 'transfer';
+
     /**
      * @var array
      */
@@ -65,6 +67,11 @@ class Document extends BaseEntity
      * @var string
      */
     private $notice;
+
+    /**
+     * @var string
+     */
+    private $error;
 
     public function rollback()
     {
@@ -191,6 +198,14 @@ class Document extends BaseEntity
     }
 
     /**
+     * @return string
+     */
+    public function getError()
+    {
+        return $this->error;
+    }
+
+    /**
      * @inheritdoc
      */
     public function setId($id)
@@ -263,6 +278,14 @@ class Document extends BaseEntity
     }
 
     /**
+     * @param string $error
+     */
+    public function setError($error)
+    {
+        $this->error = $error;
+    }
+
+    /**
      * @inheritdoc
      */
     public function load(array $map)
@@ -287,6 +310,10 @@ class Document extends BaseEntity
             $this->setNotice($map['notice']);
         }
 
+        if (isset($map['error'])) {
+            $this->setError($map['error']);
+        }
+
         if (isset($map['context'])) {
             $context = json_decode($map['context']);
 
@@ -309,6 +336,7 @@ class Document extends BaseEntity
                 'status' => $this->getStatus(),
                 'context' => json_decode($this->getContext(), true),
                 'notice' => $this->getNotice(),
+                'error' => $this->getError(),
                 'type' => $this->getType()->getName(),
                 'creatorId' => $this->getCreator()->getId(),
                 'executorId' => $this->getExecutor() ? $this->getExecutor()->getId() : null,
@@ -316,5 +344,56 @@ class Document extends BaseEntity
         }
 
         return [];
+    }
+
+    /**
+     * @param array $context
+     */
+    public function initContext(array $context)
+    {
+        $this->setContext($context);
+        $this->addDirty($context);
+    }
+
+    public function markAsCreated()
+    {
+        $this->setStatus(Document::STATUS_CREATED);
+        $this->setExecutedAt(null);
+        $this->setExecutor(null);
+
+        $this->addDirty('status');
+        $this->addDirty('executedAt');
+        $this->addDirty('executorId');
+    }
+
+    /**
+     * @param User $user
+     * @param string $error
+     */
+    public function markAsError(User $user, $error)
+    {
+        $this->setStatus(Document::STATUS_ERROR);
+        $this->setExecutor($user);
+        $this->setExecutedAt(new \DateTime());
+        $this->setError($error);
+
+        $this->addDirty('status');
+        $this->addDirty('executorId');
+        $this->addDirty('executedAt');
+        $this->addDirty('error');
+    }
+
+    /**
+     * @param User $user
+     */
+    public function markAsCompleted(User $user)
+    {
+        $this->setStatus(Document::STATUS_COMPLETED);
+        $this->setExecutor($user);
+        $this->setExecutedAt(new \DateTime());
+
+        $this->addDirty('status');
+        $this->addDirty('executorId');
+        $this->addDirty('executedAt');
     }
 }

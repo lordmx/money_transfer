@@ -132,8 +132,8 @@ abstract class AbstractGateway
 			$stmt = (int)$stmt;
 		}
 
-		if (is_string($stmt)) {
-			$stmt = '"' . $stmt . '"';
+		if (is_numeric($stmt)) {
+			return $this->conn->quote($stmt, \PDO::PARAM_INT);
 		}
 
 		return $this->conn->quote($stmt);
