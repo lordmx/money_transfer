@@ -21,6 +21,12 @@ interface GatewayInterface
 	public function findByCriteria(array $criteria, $limit = 10, $offset = 0);
 
 	/**
+	 * @param array $criteria
+	 * @return int
+	 */
+	public function countByCriteria(array $criteria);
+
+	/**
 	 * @param array $data
 	 * @return int
 	 */

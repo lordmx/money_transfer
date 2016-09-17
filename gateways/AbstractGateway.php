@@ -47,35 +47,7 @@ abstract class AbstractGateway
 		$sql = 'SELECT * FROM ' . $this->getTabel();
 
 		if ($criteria) {
-			$sql .= ' WHERE ';
-			$fields = array_keys($criteria);
-
-			for ($i = 0, $count = count($fields); $i < $count; $i++) {
-				$field = $fields[$i];
-				$value = $criteria[$field];
-				$operand = '= ?';
-
-				if (is_array($value)) {
-					foreach ($value as $j => $subValue) {
-						$value[$j] = $this->quote($subValue);
-					}
-
-					$value = implode(',', $value);
-					$operand = 'IN(?)';
-
-				} else {
-					$value = $this->quote($value);
-				}
-
-				$where = $field . ' ' . $operand;
-				$where = str_replace('?', $value, $operand);
-
-				$sql .= $where;
-
-				if ($i < $count - 2) {
-					$sql .= ' AND ';
-				}
-			}
+			$sql .= $this->getSqlFromCriteria($criteria);
 		}
 
 		if ($limit <= 0) {
@@ -91,6 +63,27 @@ abstract class AbstractGateway
 		}
 
 		return $result;
+	}
+
+	/**
+	 * @param array $criteria
+	 * @return int
+	 */
+	public function countByCriteria(array $criteria)
+	{
+		$sql = 'SELECT COUNT(' . $this->getPrimaryKey() . ') FROM ' . $this->getTabel();
+
+		if ($criteria) {
+			$sql .= $this->getSqlFromCriteria($criteria);
+		}
+
+		$row = $this->conn->fetchArray($sql);
+
+		if (!$row) {
+			return 0;
+		}
+
+		return reset($row);
 	}
 
 	/**
@@ -165,6 +158,85 @@ abstract class AbstractGateway
 		}
 
 		return $result;
+	}
+
+	/**
+	 * @param array $criteria
+	 * @return string
+	 */
+	private function getSqlFromCriteria(array $criteria)
+	{
+		$sql = ' WHERE ';
+		$fields = array_keys($criteria);
+
+		for ($i = 0, $count = count($fields); $i < $count; $i++) {
+			$field = $this->normalizeField($fields[$i]);
+			$value = $criteria[$field];
+			$operand = '= ?';
+
+			if (strpos($field, '?') !== false) {
+				$operand  = '';
+			}
+
+			if (is_array($value)) {
+				foreach ($value as $j => $subValue) {
+					$value[$j] = $this->quote($subValue);
+				}
+
+				$value = implode(',', $value);
+				$operand = 'IN(?)';
+
+			} else {
+				$value = $this->quote($value);
+			}
+
+			$where = $field . ($operand ? ' ' . $operand : '');
+			$where = str_replace('?', $value, $operand);
+
+			$sql .= $where;
+
+			if ($i < $count - 2) {
+				$sql .= ' AND ';
+			}
+		}
+
+		return $sql;
+	}
+
+	/**
+	 * @param string $field
+	 * @return string
+	 */
+	private function normalizeField($field)
+	{
+		$field = trim($field);
+
+		if (strpos($field, '?') === false) {
+			return HelperString::toUnderscore($field);
+		}
+
+		if (strpos($field, ' ') !== false) {
+			list($field, $operand) = explode(' ', $field, 2);
+			$field = trim($field);
+			$operand = trim($operand);
+
+			return HelperString::toUnderscore($field) . ' ' . $operand;
+		}
+
+		$field = substr($field, 0, -1);
+		$field = trim($field);
+
+		if (in_array($field[count($field) - 2], ['>', '<', '='])) {
+			$operand = substr($field, count($field) - 2);
+			$field = trim(substr($field, -2));
+
+			return HelperString::toUnderscore($field) . ' ' . $operand . ' ?';
+		}
+
+		$operand = substr($field, count($field) - 1);
+		$field = trim(substr($field, -1));
+
+		return HelperString::toUnderscore($field) . ' ' . $operand . ' ?';
 	}
 
 	/**

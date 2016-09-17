@@ -3,7 +3,7 @@
 namespace repositories;
 
 use entities\Entity;
-use dto\Dto;
+use dto\DtoInterface;
 
 interface RepositoryInterface
 {
@@ -14,16 +14,36 @@ interface RepositoryInterface
 	public function findById($id);
 
 	/**
-	 * @param Dto $dto
+	 * @param int $limit
+	 * @param int $offset
 	 * @return Entity[]
 	 */
-	public function findByDto(Dto $dto);
+	public function findAll($limit = 10, $offset = 0);
 
 	/**
-	 * @param Dto $dto
+	 * @param DtoInterface $dto
+	 * @param int $limit
+	 * @param int $offset
+	 * @return Entity[]
+	 */
+	public function findByDto(DtoInterface $dto, $limit = 10, $offset = 0);
+
+	/**
+	 * @return int
+	 */
+	public function countAll();
+
+	/**
+	 * @param DtoInterface $dto
+	 * @return int
+	 */
+	public function countByDto(DtoInterface $dto);
+
+	/**
+	 * @param DtoInterface $dto
 	 * @return Entity
 	 */
-	public function create(Dto $dto);
+	public function create(DtoInterface $dto);
 
 	/**
 	 * @param Entity $entity

@@ -34,6 +34,27 @@ class PaymentRuleRepository extends AbstractRepository implements RepositoryInte
 	}
 
 	/**
+	 * @param int $sourceWalletId
+	 * @param int $targetWalletId
+	 * @return PaymentRule|null
+	 */
+	public function findByWalletIds($sourceWalletId, $targetWalletId)
+	{
+		$criteria = [
+			'sourceWalletId' => (int)$sourceWalletId,
+			'targetWalletId' => (int)$targetWalletId,
+		];
+
+		$rows = $this->gateway->findByCriteria($criteria);
+
+		if (!$rows) {
+			return null;
+		}
+
+		return $this->populateEntity($rows[0]);
+	}
+
+	/**
 	 * @inheritdoc
 	 * @throws IntegrityException
 	 */

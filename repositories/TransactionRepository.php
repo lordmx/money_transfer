@@ -7,6 +7,7 @@ use entities\Transaction;
 use entities\User;
 use entities\Wallet;
 use entities\Document;
+use dto\HistoryDto;
 
 class TransactionRepository extends AbstractRepository implements RepositoryInterface
 {
@@ -39,6 +40,33 @@ class TransactionRepository extends AbstractRepository implements RepositoryInte
 	protected function createEntity()
 	{
 		return new Transaction();
+	}
+
+	/**
+	 * @param HistoryDto $dto
+	 * @return Transaction[]
+	 */
+	public function findHistory(HistoryDto $dto)
+	{
+		$criteria = $this->getHistory($criteria);
+		$rows = $this->gateway->findByCriteria($criteria);
+		$result = [];
+
+		foreach ($rows as $row) {
+			$result[] = $this->populateEntity($row);
+		}
+
+		return $result;
+	}
+
+	/**
+	 * @param HistoryDto $dto
+	 * @return int
+	 */
+	public function getHistoryCount(HistoryDto $dto)
+	{
+		$criteria = $this->getHistory($criteria);
+		return $this->gateway->countByCriteria($criteria);
 	}
 
 	/**
@@ -87,6 +115,31 @@ class TransactionRepository extends AbstractRepository implements RepositoryInte
 		} else {
 			throw new IntegrityException('Wallet is empty or missing');
 		}
+	}
+
+	/**
+	 * @param HistoryDto $dto
+	 * @return array
+	 */
+	private function getHistoryCriteria(HistoryDto $dto)
+	{
+		$criteria = [
+			'userId' => $dto->getUserId(),
+		];
+
+		if ($dto->getWalletId()) {
+			$criteria['walletId'] = $dto->getWalletId();
+		}
+
+		if ($dto->getDateFrom()) {
+			$criteria['createdAt >= ?'] = $dto->getDateFrom()->format(DATE_W3C);
+		}
+
+		if ($dto->getDateTo()) {
+			$criteria['createdAt <= ?'] = $dto->getDateTo()->format(DATE_W3C);
+		}
+
+		return $criteria;
 	}
 
 	/**

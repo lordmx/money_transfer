@@ -3,7 +3,7 @@
 namespace repositories;
 
 use entities\Entity;
-use dto\Dto;
+use dto\DtoInterface;
 use gateways\GatewayInterface;
 use repositories\exceptions;
 use cache\CacheInterface;
@@ -44,27 +44,39 @@ abstract class AbstractRepository
 	}
 
 	/**
-	 * @param Dto $dto
+	 * @param int $limit
+	 * @param int $offset
 	 * @return Entity[]
 	 */
-	public function findByDto($dto)
+	public function findAll($limit = 10, $offset = 0)
+	{
+		$items = $this->gateway->findByCriteria([], $limit, $offset);
+
+		foreach ($items as $map) {
+			$result[] = $this->populateEntity($map);
+		}
+
+		return $result;
+	}
+
+	/**
+	 * @param DtoInterface $dto
+	 * @param int $limit
+	 * @param int $offset
+	 * @return Entity[]
+	 */
+	public function findByDto(DtoInterface $dto, $limit = 10, $offset = 0)
 	{
 		$criteria = $dto->toMap();
-		$limit = 0;
-		$offset = 0;
-
-		if (isset($criteria['limit'])) {
-			$limit = (int)$criteria['limit'];
-			unset($criteria['limit']);
-		}
-
-		if (isset($criteria['offset'])) {
-			$offset = (int)$criteria['offset'];
-			unset($criteria['offset']);
-		}
 
 		if ($limit <= 0) {
 			$limit = 10;
+		}
+
+		foreach ($criteria as $key => $value) {
+			if (is_null($value)) {
+				unset($criteria[$key]);
+			}
 		}
 
 		$result = [];
@@ -78,10 +90,35 @@ abstract class AbstractRepository
 	}
 
 	/**
-	 * @param Dto $dto
+	 * @return int
+	 */
+	public function countAll()
+	{
+		return $this->gateway->countByCriteria([]);
+	}
+
+	/**
+	 * @param DtoInterface $dto
+	 * @return int
+	 */
+	public function countByDto(DtoInterface $dto)
+	{
+		$criteria = $dto->toMap();
+
+		foreach ($criteria as $key => $value) {
+			if (is_null($value)) {
+				unset($criteria[$key]);
+			}
+		}
+
+		return $this->gateway->countByCriteria($criteria);
+	}
+
+	/**
+	 * @param DtoInterface $dto
 	 * @return Entity
 	 */
-	public function create(Dto $dto)
+	public function create(DtoInterface $dto)
 	{
 		$map = $dto->toMap();
 		$entity = $this->createEntity();
