@@ -16,18 +16,11 @@ class TransferService
 	private $documentRepository;
 
 	/**
-	 * @var TransferDocumentType
-	 */
-	private $transferDocumentType;
-
-	/**
 	 * @param DocumentRepository $documentRepository
-	 * @param TransferDocumentType $transferDocumentType
 	 */
-	public function __construct(DocumentRepository $documentRepository, TransferDocumentType $transferDocumentType)
+	public function __construct(DocumentRepository $documentRepository)
 	{
 		$this->documentRepository = $documentRepository;
-		$this->transferDocumentType = $transferDocumentType;
 	}
 
 	/**
@@ -41,14 +34,14 @@ class TransferService
 
 		$document = new Document();
 		$document->setCreator($user);
-		$document->setType($this->transferDocumentType);
+		$document->setType($this->documentRepository->getType(Document::TYPE_TRANSFER));
 		$document->setCreatedAt(new \DateTime());
 		$document->setNotice($dto->getNotice());
 
 		$this->transferDocumentType->initContext($document, $dto);
 		$this->documentRepository->save($document);
 
-		$document->forward();
+		$document->execute();
 
 		$this->documentRepository->save($document);
 

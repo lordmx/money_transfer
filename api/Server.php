@@ -103,12 +103,29 @@ class Server
 	}
 
 	/**
-	 * @param string $method
-	 * @param string $route
+	 * @param string $prefix
+	 */
+	public function setPrefix($prefix)
+	{
+		$this->prefix = $prefix;
+	}
+
+	/**
+	 * @param string $version
+	 */
+	public function setVersion($version)
+	{
+		$this->version = $version;
+	}
+
+	/**
 	 * @param HandlerInterface $handler
 	 */
-	private function registerHandler($method, $route, HandlerInterface $handler)
+	private function registerHandler(HandlerInterface $handler)
 	{
+		$method = strtolower($handler->getMethod());
+		$route = $handler->getRoute(); 
+
 		$route = $this->prefix . $this->version . $route;
 		$this->app->$method($route, $handler->getCallback($this->user, $this->request));
 	}

@@ -11,6 +11,14 @@ class UserBalanceHandler extends AbstractHandler implements HandlerInterface
 	/**
 	 * @inheritdoc
 	 */
+	public function getRoute()
+	{
+		return '/users/balance';
+	}
+
+	/**
+	 * @inheritdoc
+	 */
 	public function getCallback(User $user, Request $request)
 	{
 		$di = $this->di;

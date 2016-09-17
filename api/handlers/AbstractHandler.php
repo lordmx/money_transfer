@@ -18,4 +18,20 @@ abstract class AbstractHandler
 	{
 		$this->di = $di;
 	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function getMethod()
+	{
+		return api\Server::METHOD_GET;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function getScopes()
+	{
+		return [];
+	}
 }

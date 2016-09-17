@@ -12,6 +12,14 @@ class UserHistoryHandler extends AbstractHandler implements HandlerInterface
 	/**
 	 * @inheritdoc
 	 */
+	public function getRoute()
+	{
+		return '/users/transfer';
+	}
+	
+	/**
+	 * @inheritdoc
+	 */
 	public function getCallback(User $user, Request $request)
 	{
 		$di = $this->di;

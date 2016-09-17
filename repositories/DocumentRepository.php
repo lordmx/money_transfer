@@ -41,6 +41,15 @@ class DocumentRepository extends AbstractRepository implements RepositoryInterfa
 	}
 
 	/**
+	 * @param string $name
+	 * @return DocumentType
+	 */
+	public function getType($name)
+	{
+		return $this->types[$name];
+	}
+
+	/**
 	 * @inheritdoc
 	 * @throws IntegrityException
 	 */

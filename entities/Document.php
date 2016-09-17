@@ -85,6 +85,14 @@ class Document extends BaseEntity
     }
 
     /**
+     * @return bool
+     */
+    public function isError()
+    {
+        return $this->getStatus() == self::STATUS_ERROR;
+    }
+
+    /**
      * @param User $executor
      */
     public function execute(User $executor)
