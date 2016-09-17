@@ -1,2 +1,4 @@
 vendor
 logs
+migrations/.migrations.log
+tests/_output/*

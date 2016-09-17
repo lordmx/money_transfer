@@ -2,7 +2,7 @@
 
 namespace app;
 
-use Silex\Application;
+use \Silex\Application;
 use di\Container;
 
 class Bootstrap
@@ -26,17 +26,16 @@ class Bootstrap
 	}
 
 	/**
-	 * @param string $root
 	 * @param string $config
 	 */
-	public function init($root, $config)
+	public function init($config)
 	{
 		$app = $this->app;
 
 		$app['debug'] = true;
 		$app->register(new \Euskadi31\Silex\Provider\ConfigServiceProvider($config));
 
-		$app->register(new Silex\Provider\DoctrineServiceProvider(), [
+		$app->register(new \Silex\Provider\DoctrineServiceProvider(), [
 		    'db.options' => [
 		        'driver'    => 'pdo_mysql',
 		        'host'      => $app['mysql']['host'],
@@ -47,7 +46,6 @@ class Bootstrap
 		    ],
 		]);
 
-		$this->initLoader();
 		$this->initContainer();
 	}
 
@@ -56,72 +54,48 @@ class Bootstrap
 	 */
 	public function getContainer()
 	{
-		return $this->container;
-	}
-
-	/**
-	 * @param string $root
-	 */
-	private function initLoader($root)
-	{
-		$namespaces = [
-			'api',
-			'cache',
-			'di',
-			'dto',
-			'entities',
-			'exceptions',
-			'gateways',
-			'helpers',
-			'oauth2',
-			'repositories',
-			'services',
-		];
-
-		foreach ($namespaces as $namespace) {
-			$app['autoloader']->registerNamespace($namespace, $root . '/' . $namespace);
-		}
+		return $this->di;
 	}
 
 	private function initContainer()
 	{
-		$this->di = new Container();
+		$di = new Container();
 
 		// Register DBAL
-		$di->set('db', $this->app['db']);
+		$di->register('db', $this->app['db']);
 
 		// Register gateways
 		$di->lazy('exchangeGateway', function () use ($di) {
-			return new gateways\ExchangeGateway($di->get('db'));
+			return new \gateways\ExchangeGateway($di->get('db'));
 		});
 		$di->lazy('paymentRuleGateway', function () use ($di) {
-			return new gateways\PaymentRuleGateway($di->get('db'));
+			return new \gateways\PaymentRuleGateway($di->get('db'));
 		});
 		$di->lazy('transactionGateway', function () use ($di) {
-			return new gateways\TransactionGateway($di->get('db'));
+			return new \gateways\TransactionGateway($di->get('db'));
 		});
 		$di->lazy('userGateway', function () use ($di) {
-			return new gateways\UserGateway($di->get('db'));
+			return new \gateways\UserGateway($di->get('db'));
 		});
 		$di->lazy('walletGateway', function () use ($di) {
-			return new gateways\WalletGateway($di->get('db'));
+			return new \gateways\WalletGateway($di->get('db'));
 		});
 		$di->lazy('documentGateway', function () use ($di) {
-			return new gateways\DocumentGateway($di->get('db'));
+			return new \gateways\DocumentGateway($di->get('db'));
 		});
 		$di->lazy('sessionGateway', function () use ($di) {
-			return new oauth2\gateways\SessionGateway($di->get('db'));
+			return new \oauth2\gateways\SessionGateway($di->get('db'));
 		});
 		$di->lazy('scopeGateway', function () use ($di) {
-			return new oauth2\gateways\ScopeGateway($di->get('db'));
+			return new \oauth2\gateways\ScopeGateway($di->get('db'));
 		});
 		$di->lazy('userScopeGateway', function () use ($di) {
-			return new oauth2\gateways\UserScopeGateway($di->get('db'));
+			return new \oauth2\gateways\UserScopeGateway($di->get('db'));
 		});
 
 		// Register repositories
 		$di->lazy('documentRepository', function () use ($di) {
-			$typeTransfer = new entities\types\TransferDocumentType(
+			$typeTransfer = new \entities\types\TransferDocumentType(
 				$di->get('transactionRepository'),
 				$di->get('paymentRuleRepository'),
 				$di->get('userRepository'),
@@ -133,68 +107,71 @@ class Bootstrap
 				entities\Document::TYPE_TRANSFER => $typeTransfer,
 			];
 
-			return new repositories\DocumentRepository(
+			return new \repositories\DocumentRepository(
 				$di->get('documentGateway'),
 				$di->get('userRepository'),
 				$types
 			);
 		});
 		$di->lazy('exchangeRepository', function () use ($di) {
-			return new repositories\ExchangeRepository(
+			return new \repositories\ExchangeRepository(
 				$di->get('exchangeGateway')
 			);
 		});
 		$di->lazy('paymentRuleRepository', function () use ($di) {
-			return new repositories\PaymentRuleRepository(
+			return new \repositories\PaymentRuleRepository(
 				$di->get('paymentRuleGateway'),
 				$di->get('walletRepository')
 			);
 		});
 		$di->lazy('transactionRepository', function () use ($di) {
-			return new repositories\TransactionRepository(
+			return new \repositories\TransactionRepository(
 				$di->get('transactionGateway'),
 				$di->get('userRepository'),
 				$di->get('walletRepository')
 			);
 		});
 		$di->lazy('userRepository', function () use ($di) {
-			return new repositories\UserRepository(
+			return new \repositories\UserRepository(
 				$di->get('userGateway')
 			);
 		});
 		$di->lazy('walletRepository', function () use ($di) {
-			return new repositories\WalletRepository(
+			return new \repositories\WalletRepository(
 				$di->get('walletGateway')
 			);
 		});
 		$di->lazy('scopeRepository', function () use ($di) {
-			return new oauth2\repositories\ScopeRepository(
+			return new \oauth2\repositories\ScopeRepository(
 				$di->get('scopeGateway')
 			);
 		});
 		$di->lazy('sessionRepository', function () use ($di) {
-			return new oauth2\repositories\SessionRepository(
+			return new \oauth2\repositories\SessionRepository(
 				$di->get('sessionGateway'),
 				$di->get('userScopeGateway'),
-				$di->get('scopeRepository')
+				$di->get('scopeRepository'),
+				$di->get('userRepository')
 			);
 		});
 
 		// Register services
 		$di->lazy('balanceService', function () use ($di) {
-			return new services\BalanceService(
+			return new \services\BalanceService(
 				$di->get('transactionRepository')
 			);
 		});
 		$di->lazy('exchangeService', function () use ($di) {
-			return new services\ExchangeService(
+			return new \services\ExchangeService(
 				$di->get('exchangeRepository')
 			);
 		});
 		$di->lazy('transferService', function () use ($di) {
-			return new services\TransferService(
+			return new \services\TransferService(
 				$di->get('documentRepository')
 			);
 		});
+
+		$this->di = $di;
 	}
 }

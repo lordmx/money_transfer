@@ -3,6 +3,10 @@
         "silex/silex": "~2.0",
         "euskadi31/config-service-provider": "^1.0",
         "doctrine/dbal": "~2.2",
-        "davedevelopment/phpmig": "*"
+        "davedevelopment/phpmig": "*",
+        "codeception/codeception": "^2"
+    },
+    "autoload": {
+        "psr-4": {"": "src/"}
     }
 }
