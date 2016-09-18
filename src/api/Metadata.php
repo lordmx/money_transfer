@@ -33,7 +33,7 @@ class Metadata
 	{
 		$this->limit = $limit;
 		$this->offset = $offset;
-		$this->sort = $sort;
+		$this->count = $count;
 	}
 
 	/**

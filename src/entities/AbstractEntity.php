@@ -2,10 +2,16 @@
 
 namespace entities;
 
-class BaseEntity implements Entity
+abstract class AbstractEntity
 {
+	/**
+	 * @var string[]
+	 */
 	protected $dirty = [];
 
+	/**
+	 * @var string[]
+	 */
 	protected $errors = [];
 
 	/**

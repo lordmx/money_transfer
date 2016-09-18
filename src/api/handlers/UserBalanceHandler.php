@@ -2,6 +2,8 @@
 
 namespace api\handlers;
 
+use api\Result;
+use api\Metadata;
 use entities\User;
 use \Symfony\Component\HttpFoundation\Request;
 use \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -21,16 +23,17 @@ class UserBalanceHandler extends AbstractHandler implements HandlerInterface
 	 */
 	public function getCallback(Request $request)
 	{
-		$di = $this->di;
-		$user  = $this->user;
+		$handler = $this;
 
-		return function() use ($user, $request, $di) {
-			$walletId = $request->request->get('wallet_id');
-			$dateFrom = $request->request->get('date_from');
-			$dateTo = $request->request->get('date_to');
+		return function() use ($handler, $request) {
+			$di = $handler->getContainer();
+			$user  = $handler->getUser();
+
 			$count = 0;
-			$limit = (int)$request->request->get('limit', 10);
-			$offset = (int)$request->request->get('offset', 0);
+			$walletId = $request->get('wallet_id');
+			$limit = (int)$request->get('limit', 10);
+			$offset = (int)$request->get('offset', 0);
+			$wallets = [];
 
 			if (!$walletId) {
 				$wallets = $di->get('walletRepository')->findAll($limit, $offset);

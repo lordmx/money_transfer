@@ -176,8 +176,6 @@ class TransferDto implements DtoInterface
 
 		if (!empty($map['source_user_id'])) {
 			$dto->setSourceUserId((int)$map['source_user_id']);
-		} else {
-			throw new ValidationException('Source user ID is empty or missing');
 		}
 
 		if (!empty($map['target_user_id'])) {

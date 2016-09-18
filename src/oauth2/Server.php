@@ -39,7 +39,7 @@ class Server
 			throw new UnauthorizedHttpException('Wrong grant given');
 		}
 
-		return $this->grants[$grant]->createSession($token);
+		return $this->grants[$grantName]->createSession($token);
 	}
 
 	/**

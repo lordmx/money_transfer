@@ -2,6 +2,8 @@
 
 namespace api\handlers;
 
+use api\Result;
+use api\Metadata;
 use entities\User;
 use \Symfony\Component\HttpFoundation\Request;
 use \Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -14,7 +16,7 @@ class TransferHandler extends AbstractHandler implements HandlerInterface
 	 */
 	public function getRoute()
 	{
-		return '/users/transfer';
+		return '/users/transactions';
 	}
 
 	/**
@@ -30,11 +32,20 @@ class TransferHandler extends AbstractHandler implements HandlerInterface
 	 */
 	public function getCallback(Request $request)
 	{
-		$di = $this->di;
-		$user = $this->user;
+		$handler = $this;
 
-		return function() use ($user, $request, $di) {
-			$dto = TransferDto::fromMap($request->request->all());
+		return function() use ($handler, $request) {
+			$di = $handler->getContainer();
+			$user = $handler->getUser();
+
+			$handler->ensureUserPermitted($user);
+			$data = json_decode($request->getContent(), true);
+
+			if (json_last_error()) {
+				throw new BadRequestHttpException('Wrong data format');
+			}
+
+			$dto = TransferDto::fromMap($data);
 			$document = $di->get('transferService')->transfer($user, $dto);
 
 			if ($document->isError()) {
@@ -44,7 +55,7 @@ class TransferHandler extends AbstractHandler implements HandlerInterface
 			$transactions = $di->get('transactionRepository')->findByDocument($document);
 			$count = count($transactions);
 
-			return (new Result(new Metadata(1, 0, $count), 'transactions', $transactions))->toJson();
+			return (new Result(new Metadata(0, 0, $count), 'transactions', $transactions))->toJson();
 		};
 	}
 }

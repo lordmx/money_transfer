@@ -19,7 +19,7 @@ class ExchangeRepository extends AbstractRepository implements RepositoryInterfa
 	 * @param string $targetId
 	 * @return Exchange
 	 */
-	public function findForPair($sourceId, $targetId)
+	public function findByPair($sourceId, $targetId)
 	{
 		if ($sourceId == $targetId) {
 			$exchange = new Exchange();

@@ -2,7 +2,7 @@
 
 namespace entities;
 
-class Exchange extends BaseEntity
+class Exchange extends AbstractEntity implements Entity
 {
 	/**
 	 * @var int

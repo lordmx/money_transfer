@@ -103,12 +103,12 @@ class TransferDocumentType implements DocumentType
 
 		$amount = $dto->getAmount();
 
-		if ($amount >= $paymentRule->getMaxAmount()) {
+		if ($paymentRule->getMaxAmount() && $amount >= $paymentRule->getMaxAmount()) {
 			$document->markAsError($user, 'Amount must be lesser than ' . $paymentRule->getMaxAmount());
 			return $document;
 		}
 
-		if ($amount <= $paymentRule->getMinAmount()) {
+		if ($paymentRule->getMinAmount() && $amount <= $paymentRule->getMinAmount()) {
 			$document->markAsError($user, 'Amount must be greater than ' . $paymentRule->getMinAmount());
 			return $document;
 		}
@@ -127,11 +127,34 @@ class TransferDocumentType implements DocumentType
 			return $document;
 		}
 
+		if ($sourceUser->getId() == $targetUser->getId()) {
+			$document->markAsError($user, 'Source user and target user should not be equals');
+			return $document;
+		}
+
 		$balance = $this->balanceService->getBalanceFor($sourceUser, $paymentRule->getSourceWallet());
 
 		if ($amount > $balance) {
-			$document->markAsError($user, 'Insufficient funds';
+			$document->markAsError($user, 'Insufficient funds');
 			return $document;
+		}
+
+		$totalAmount = $amount;
+
+		if ($paymentRule->getCommission()) {
+			$totalAmount *= (1 + $paymentRule->getCommission() / 100);
+		}
+
+		$targetAmount = $amount;
+
+		if ($paymentRule->getCrossRate()) {
+			$targetAmount *= $paymentRule->getCrossRate();
+		} else {
+			$targetAmount = $this->exchangeService->calc(
+				$paymentRule->getSourceWallet()->getCurrencyId(),
+				$paymentRule->getTargetWallet()->getCurrencyId(),
+				$amount
+			);
 		}
 
 		$sourceTransaction = new Transaction();
@@ -139,7 +162,7 @@ class TransferDocumentType implements DocumentType
 		$sourceTransaction->setWallet($paymentRule->getSourceWallet());
 		$sourceTransaction->setUser($sourceUser);
 		$sourceTransaction->setCreatedAt(new \DateTime());
-		$sourceTransaction->setAmount($amount);
+		$sourceTransaction->setAmount(-$totalAmount);
 		$this->transactionRepository->save($sourceTransaction);
 
 		$targetTransaction = new Transaction();
@@ -147,11 +170,7 @@ class TransferDocumentType implements DocumentType
 		$targetTransaction->setWallet($paymentRule->getTargetWallet());
 		$targetTransaction->setUser($targetUser);
 		$targetTransaction->setCreatedAt(new \DateTime());
-		$targetTransaction->setAmount($this->balanceService->calc(
-			$paymentRule->getSourceWallet()->getCurrencyId(),
-			$paymentRule->getTargetWallet()->getCurrencyId(),
-			$amount
-		));
+		$targetTransaction->setAmount($targetAmount);
 		$this->transactionRepository->save($targetTransaction);
 
 		$document->markAsCompleted($user);

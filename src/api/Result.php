@@ -2,7 +2,7 @@
 
 namespace api;
 
-use entities\EntityInterface;
+use entities\Entity;
 use helpers\HelperString;
 
 class Result
@@ -42,8 +42,8 @@ class Result
 		$vector = $this->vector;
 
 		foreach ($vector as $i => $item) {
-			if ($item instanceof EntityInterface) {
-				$map = $vector->toMap();
+			if ($item instanceof Entity) {
+				$map = $item->toMap();
 
 				foreach ($map as $key => $value) {
 					unset($map[$key]);
@@ -56,7 +56,7 @@ class Result
 
 		$raw = [
 			'resultset' => [
-				'metadata' => $metadata->toMap(),
+				'metadata' => $this->metadata->toMap(),
 			],
 			$this->resource => $vector,
 		];

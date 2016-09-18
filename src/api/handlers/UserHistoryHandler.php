@@ -2,6 +2,8 @@
 
 namespace api\handlers;
 
+use api\Result;
+use api\Metadata;
 use entities\User;
 use \Symfony\Component\HttpFoundation\Request;
 use \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -14,23 +16,25 @@ class UserHistoryHandler extends AbstractHandler implements HandlerInterface
 	 */
 	public function getRoute()
 	{
-		return '/users/transfer';
+		return '/users/transactions';
 	}
-	
+
 	/**
 	 * @inheritdoc
 	 */
 	public function getCallback(Request $request)
 	{
-		$di = $this->di;
-		$user = $this->user;
+		$handler = $this;
 
-		return function() use ($user, $request, $di) {
-			$walletId = $request->request->get('wallet_id');
-			$dateFrom = $request->request->get('date_from');
-			$dateTo = $request->request->get('date_to');
-			$limit = (int)$request->request->get('limit', 10);
-			$offset = (int)$request->request->get('offset', 0);
+		return function() use ($handler, $request) {
+			$di = $handler->getContainer();
+			$user  = $handler->getUser();
+
+			$walletId = $request->get('wallet_id');
+			$dateFrom = $request->get('date_from');
+			$dateTo = $request->get('date_to');
+			$limit = (int)$request->get('limit', 10);
+			$offset = (int)$request->get('offset', 0);
 			$result = [];
 
 			$dto = new HistoryDto();
@@ -49,7 +53,7 @@ class UserHistoryHandler extends AbstractHandler implements HandlerInterface
 			}
 
 			$transactions = $di->get('transactionRepository')->findHistory($dto, $limit, $offset);
-			$count = $dt->get('transactionRepository')->getHistoryCount($dto);
+			$count = $di->get('transactionRepository')->getHistoryCount($dto);
 
 			return (new Result(new Metadata($limit, $offset, $count), 'transactions', $transactions))->toJson();
 		};

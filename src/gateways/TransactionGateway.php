@@ -7,7 +7,7 @@ class TransactionGateway extends AbstractGateway implements GatewayInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function getTable()
+	protected function getTable()
 	{
 		return 'transactions';
 	}
@@ -21,7 +21,7 @@ class TransactionGateway extends AbstractGateway implements GatewayInterface
 	{
 		$row = $this->conn->fetchArray(
 			'SELECT SUM(amount) FROM ' . $this->getTable() . ' WHERE user_id = ' . $userId . ' AND wallet_id = ' . $walletId
-		)
+		);
 
 		if (!$row) {
 			return 0.0;

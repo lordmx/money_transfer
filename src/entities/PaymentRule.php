@@ -2,7 +2,7 @@
 
 namespace entities;
 
-class PaymentRule extends BaseEntity
+class PaymentRule extends AbstractEntity implements Entity
 {
 	/**
 	 * @var int

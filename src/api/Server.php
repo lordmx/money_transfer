@@ -90,6 +90,11 @@ class Server
 			}
 		});
 
+		$app->after(function (Request $request, Response $response) {
+			$response->headers->set('Content-Type', 'application/json');
+			return $response;
+		});
+
 		$app->error(function (\Exception $e, Request $request, $code) use ($app) {
 		    $message = $e->getMessage();
 
@@ -100,11 +105,15 @@ class Server
 		    	case 401:
 		    		$message = 'Unauthorized';
 		    		break;
+		    	case 403:
+		    		$message = 'Access denied';
+		    		break;
 		    }
 
 		    $response = new \Symfony\Component\HttpFoundation\JsonResponse();
 		    $response->setContent(json_encode(['resultset' => ['error' => $message, 'code' => $code]]));
 		    $response->setStatusCode($code);
+		    $response->headers->set('Content-Type', 'application/json');
 
 		    return $response;
 		});

@@ -2,7 +2,7 @@
 
 namespace entities;
 
-class Transaction extends BaseEntity
+class Transaction extends AbstractEntity implements Entity
 {
 	/**
 	 * @var int
@@ -151,6 +151,14 @@ class Transaction extends BaseEntity
 	}
 
 	/**
+	 * @param User $user
+	 */
+	public function setUser(User $user)
+	{
+		$this->user = $user;
+	}
+
+	/**
 	 * @inheritdoc
 	 */
 	public function load(array $map)
@@ -180,8 +188,11 @@ class Transaction extends BaseEntity
 				'amount' => $this->getAmount(),
 				'walletId' => $this->getWallet()->getId(),
 				'documentId' => $this->getDocument()->getId(),
+				'userId' => $this->getUser()->getId(),
 			];
 		}
+
+		print_r($this->errors);
 
 		return [];
 	}

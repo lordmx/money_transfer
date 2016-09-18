@@ -95,22 +95,9 @@ class Bootstrap
 
 		// Register repositories
 		$di->lazy('documentRepository', function () use ($di) {
-			$typeTransfer = new \entities\types\TransferDocumentType(
-				$di->get('transactionRepository'),
-				$di->get('paymentRuleRepository'),
-				$di->get('userRepository'),
-				$di->get('balanceService'),
-				$di->get('exchangeService')
-			);
-
-			$types = [
-				entities\Document::TYPE_TRANSFER => $typeTransfer,
-			];
-
 			return new \repositories\DocumentRepository(
 				$di->get('documentGateway'),
-				$di->get('userRepository'),
-				$types
+				$di->get('userRepository')
 			);
 		});
 		$di->lazy('exchangeRepository', function () use ($di) {
@@ -128,7 +115,8 @@ class Bootstrap
 			return new \repositories\TransactionRepository(
 				$di->get('transactionGateway'),
 				$di->get('userRepository'),
-				$di->get('walletRepository')
+				$di->get('walletRepository'),
+				$di->get('documentRepository')
 			);
 		});
 		$di->lazy('userRepository', function () use ($di) {
@@ -171,6 +159,20 @@ class Bootstrap
 				$di->get('documentRepository')
 			);
 		});
+
+		$typeTransfer = new \entities\types\TransferDocumentType(
+			$di->get('transactionRepository'),
+			$di->get('paymentRuleRepository'),
+			$di->get('userRepository'),
+			$di->get('balanceService'),
+			$di->get('exchangeService')
+		);
+
+		$types = [
+			\entities\Document::TYPE_TRANSFER => $typeTransfer,
+		];
+
+		$di->get('documentRepository')->setTypes($types);
 
 		$this->di = $di;
 	}

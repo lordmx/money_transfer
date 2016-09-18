@@ -4,7 +4,7 @@ namespace entities;
 
 use entities\types\DocumentType;
 
-class Document extends BaseEntity
+class Document extends AbstractEntity implements Entity
 {
     const STATUS_CREATED = 'created';
     const STATUS_PENDING = 'pending';
@@ -16,7 +16,7 @@ class Document extends BaseEntity
     /**
      * @var array
      */
-    private statuc $possibleStatuses = [
+    private static $possibleStatuses = [
         self::STATUS_CREATED,
         self::STATUS_PENDING,
         self::STATUS_COMPLETED,
@@ -101,8 +101,11 @@ class Document extends BaseEntity
         $this->setExecutor($executor);
 
         try {
-            $this->type->forward($this);
-            $this->setStatus(self::STATUS_COMPLETED);
+            $this->type->forward($this, $executor);
+
+            if (!$this->isError()) {
+                $this->setStatus(self::STATUS_COMPLETED);
+            }
         } catch (\Exception $e) {
             $this->setStatus(self::STATUS_ERROR);
             $this->setNotice($e->getMessage());
@@ -342,9 +345,9 @@ class Document extends BaseEntity
                 'createdAt' => $this->getCreatedAt()->format(DATE_W3C),
                 'executedAt' => $this->getExecutedAt() ? $this->getExecutedAt()->format(DATE_W3C) : null,
                 'status' => $this->getStatus(),
-                'context' => json_decode($this->getContext(), true),
-                'notice' => $this->getNotice(),
-                'error' => $this->getError(),
+                'context' => json_encode($this->getContext()),
+                'notice' => (string)$this->getNotice(),
+                'error' => (string)$this->getError(),
                 'type' => $this->getType()->getName(),
                 'creatorId' => $this->getCreator()->getId(),
                 'executorId' => $this->getExecutor() ? $this->getExecutor()->getId() : null,
@@ -360,7 +363,7 @@ class Document extends BaseEntity
     public function initContext(array $context)
     {
         $this->setContext($context);
-        $this->addDirty($context);
+        $this->addDirty('context');
     }
 
     public function markAsCreated()

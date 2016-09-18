@@ -4,7 +4,7 @@ namespace dto;
 
 use dto\exceptions\ValidationException;
 
-class TransferDto implements DtoInterface
+class HistoryDto implements DtoInterface
 {
 	/**
 	 * @var int
@@ -72,6 +72,14 @@ class TransferDto implements DtoInterface
 	public function setWalletId($walletId)
 	{
 		$this->walletId = $walletId;
+	}
+
+	/**
+	 * @param int $userId
+	 */
+	public function setUserId($userId)
+	{
+		$this->userId = $userId;
 	}
 
 	/**

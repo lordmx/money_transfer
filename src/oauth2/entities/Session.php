@@ -3,9 +3,10 @@
 namespace oauth2\entities;
 
 use entities\User;
-use entities\BaseEntity;
+use entities\AbstractEntity;
+use entities\Entity;
 
-class Session extends BaseEntity
+class Session extends AbstractEntity implements Entity
 {
 	/**
 	 * @var int

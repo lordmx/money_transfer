@@ -2,9 +2,10 @@
 
 namespace oauth2\entities;
 
-use entities\BaseEntity;
+use entities\AbstractEntity;
+use entities\Entity;
 
-class Scope extends BaseEntity
+class Scope extends AbstractEntity implements Entity
 {
 	/**
 	 * @var id

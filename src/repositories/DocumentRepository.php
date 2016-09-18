@@ -6,6 +6,7 @@ use gateways\GatewayInterface;
 use entities\Document;
 use entities\User;
 use entities\types\DocumentType;
+use repositories\exceptions\IntegrityException;
 
 class DocumentRepository extends AbstractRepository implements RepositoryInterface
 {
@@ -22,14 +23,12 @@ class DocumentRepository extends AbstractRepository implements RepositoryInterfa
 	/**
 	 * @param GatewayInterface $gateway
 	 * @param UserRepository $userRepository
-	 * @param DocumentType[] $types
 	 */
-	public function __construct(GatewayInterface $gateway, UserRepository $userRepository, array $types = [])
+	public function __construct(GatewayInterface $gateway, UserRepository $userRepository)
 	{
 		parent::__construct($gateway);
 
 		$this->userRepository = $userRepository;
-		$this->types = $types;
 	}
 
 	/**
@@ -47,6 +46,14 @@ class DocumentRepository extends AbstractRepository implements RepositoryInterfa
 	public function getType($name)
 	{
 		return $this->types[$name];
+	}
+
+	/**
+	 * @param DocumentType[] $types
+	 */
+	public function setTypes(array $types)
+	{
+		$this->types = $types;
 	}
 
 	/**
@@ -82,6 +89,8 @@ class DocumentRepository extends AbstractRepository implements RepositoryInterfa
 		} else {
 			throw new IntegrityException('Document type is empty or missing');
 		}
+
+		return $entity;
 	}
 
 	/**

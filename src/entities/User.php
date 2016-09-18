@@ -2,7 +2,9 @@
 
 namespace entities;
 
-class User extends BaseEntity
+use oauth2\entities\Scope;
+
+class User extends AbstractEntity implements Entity
 {
 	/**
 	 * @var int
@@ -13,6 +15,11 @@ class User extends BaseEntity
 	 * @var string
 	 */
 	private $accessToken;
+
+	/**
+	 * @var Scope[]
+	 */
+	private $scopes = [];
 
 	/**
 	 * @inheritdoc
@@ -39,6 +46,14 @@ class User extends BaseEntity
 	}
 
 	/**
+	 * @return Scope[]
+	 */
+	public function getScopes()
+	{
+		return $this->scopes;
+	}
+
+	/**
 	 * @inheritdoc
 	 */
 	public function setId($id)
@@ -52,6 +67,14 @@ class User extends BaseEntity
 	public function setAccessToken($token)
 	{
 		$this->accessToken = $token;
+	}
+
+	/**
+	 * @param Scope[] $scopes
+	 */
+	public function setScopes(array $scopes)
+	{
+		$this->scopes = $scopes;
 	}
 
 	/**

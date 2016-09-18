@@ -9,7 +9,7 @@ class PaymentRuleTable extends Migration
      */
     public function up()
     {
-        $sql = 'CREATE TABLE `payment_rules` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `source_wallet_id` INT(11) NOT NULL , `target_wallet_id` INT(11) NOT NULL , `min_amount` FLOAT(11) NOT NULL , `max_amount` FLOAT(11) NOT NULL , `commission` FLOAT(11) NOT NULL , `cross_rate` FLOAT(11) NOT NULL , PRIMARY KEY (`id`), INDEX `wallet_pair` (`source_wallet_id`, `target_wallet_id`)) ENGINE = InnoDB;';
+        $sql = 'CREATE TABLE `payment_rules` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `source_wallet_id` INT(11) NOT NULL , `target_wallet_id` INT(11) NOT NULL , `min_amount` FLOAT(11) NULL , `max_amount` FLOAT(11) NULL , `commission` FLOAT(11) NULL , `cross_rate` FLOAT(11) NULL , PRIMARY KEY (`id`), INDEX `wallet_pair` (`source_wallet_id`, `target_wallet_id`)) ENGINE = InnoDB;';
 
         $this->getContainer()['db']->query($sql);
     }

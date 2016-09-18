@@ -8,6 +8,7 @@ use entities\User;
 use entities\Wallet;
 use entities\Document;
 use dto\HistoryDto;
+use repositories\exceptions\IntegrityException;
 
 class TransactionRepository extends AbstractRepository implements RepositoryInterface
 {
@@ -22,16 +23,27 @@ class TransactionRepository extends AbstractRepository implements RepositoryInte
 	private $walletRepository;
 
 	/**
+	 * @var DocumentRepository
+	 */
+	private $documentRepository;
+
+	/**
 	 * @param GatewayInterface $gateway
 	 * @param UserRepository $userRepository
 	 * @param WalletRepository $paymentRuleRepository
+	 * @param DocumentRepository $documentRepository
 	 */
-	public function __construct(GatewayInterface $gateway, UserRepository $userRepository, WalletRepository $walletRepository)
-	{
+	public function __construct(
+		GatewayInterface $gateway,
+		UserRepository $userRepository,
+		WalletRepository $walletRepository,
+		DocumentRepository $documentRepository
+	) {
 		parent::__construct($gateway);
 
 		$this->userRepository = $userRepository;
 		$this->walletRepository = $walletRepository;
+		$this->documentRepository = $documentRepository;
 	}
 
 	/**
@@ -44,12 +56,14 @@ class TransactionRepository extends AbstractRepository implements RepositoryInte
 
 	/**
 	 * @param HistoryDto $dto
+	 * @param int $limit
+	 * @param int $offset
 	 * @return Transaction[]
 	 */
-	public function findHistory(HistoryDto $dto)
+	public function findHistory(HistoryDto $dto, $limit = 10, $offset = 0)
 	{
-		$criteria = $this->getHistory($criteria);
-		$rows = $this->gateway->findByCriteria($criteria);
+		$criteria = $this->getHistoryCriteria($dto);
+		$rows = $this->gateway->findByCriteria($criteria, $limit, $offset);
 		$result = [];
 
 		foreach ($rows as $row) {
@@ -65,7 +79,7 @@ class TransactionRepository extends AbstractRepository implements RepositoryInte
 	 */
 	public function getHistoryCount(HistoryDto $dto)
 	{
-		$criteria = $this->getHistory($criteria);
+		$criteria = $this->getHistoryCriteria($dto);
 		return $this->gateway->countByCriteria($criteria);
 	}
 
@@ -105,16 +119,24 @@ class TransactionRepository extends AbstractRepository implements RepositoryInte
 		$entity = parent::populateEntity($map);
 
 		if (isset($map['userId'])) {
-			$this->setUser($this->getUser($map['userId']));
+			$entity->setUser($this->getUser($map['userId']));
 		} else {
 			throw new IntegrityException('User is empty or missing');
 		}
 
 		if (isset($map['walletId'])) {
-			$this->setWallet($this->getWallet($map['walletId']));
+			$entity->setWallet($this->getWallet($map['walletId']));
 		} else {
 			throw new IntegrityException('Wallet is empty or missing');
 		}
+
+		if (isset($map['documentId'])) {
+			$entity->setDocument($this->getDocument($map['documentId']));
+		} else {
+			throw new IntegrityException('Document is empty or missing');
+		}
+
+		return $entity;
 	}
 
 	/**
@@ -172,5 +194,21 @@ class TransactionRepository extends AbstractRepository implements RepositoryInte
 		}
 
 		return $wallet;
+	}
+
+	/**
+	 * @param int $documentId
+	 * @return Document
+	 * @throws IntegrityException
+	 */
+	private function getDocument($documentId)
+	{
+		$document = $this->documentRepository->findById((int)$documentId);
+
+		if (!$document) {
+			throw new IntegrityException('Wrong document given');
+		}
+
+		return $document;
 	}
 }

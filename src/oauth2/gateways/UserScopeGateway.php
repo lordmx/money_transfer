@@ -10,7 +10,7 @@ class UserScopeGateway extends AbstractGateway implements GatewayInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function getTable()
+	protected function getTable()
 	{
 		return 'oauth2_user_scopes';
 	}
@@ -21,6 +21,13 @@ class UserScopeGateway extends AbstractGateway implements GatewayInterface
 	 */
 	public function findUserScopeIds($userId)
 	{
-		return $this->conn->fetchColumn('SELECT scope_id FROM user_scopes WHERE user_id = ' . (int)$userId);
+		$rows = $this->findByCriteria(['userId' => (int)$userId]);
+		$ids = [];
+
+		foreach ($rows as $row) {
+			$ids[] = $row['scopeId'];
+		}
+
+		return $ids;
 	}
 }

@@ -13,6 +13,10 @@ extensions:
     enabled:
         - Codeception\Extension\RunFailed
 modules:
+    enabled:
+       - REST:
+           depends: PhpBrowser
+           url: 'http://api/api/v1/'
     config:
         Db:
             dsn: ''

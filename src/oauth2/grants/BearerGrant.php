@@ -9,10 +9,10 @@ class BearerGrant extends AbstractGrant implements GrantInterface
 	 */
 	public function createSession($token)
 	{
-		$user = $this->userRepository->findByAccessToken();
+		$user = $this->userRepository->findByAccessToken($token);
 
 		if (!$user) {
-			throwUnauthorizedHttpException();
+			$this->throwUnauthorizedHttpException();
 		}
 
 		$session = $this->sessionRepository->findByUser($user);

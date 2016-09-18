@@ -2,7 +2,7 @@
 
 namespace entities;
 
-class Wallet extends BaseEntity
+class Wallet extends AbstractEntity implements Entity
 {
     /**
      * @var int
@@ -25,7 +25,7 @@ class Wallet extends BaseEntity
     public function validate()
     {
         if (!$this->currencyId) {
-            $this->errors[] = 'Currencies ISO code is empty or missing'
+            $this->errors[] = 'Currencies ISO code is empty or missing';
         }
 
         return empty($this->errors);

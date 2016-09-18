@@ -31,17 +31,19 @@ class TransferService
 	public function transfer(User $user, TransferDto $dto)
 	{
 		$dto->setSourceUserId($user->getId());
+		$type = $this->documentRepository->getType(Document::TYPE_TRANSFER);
 
 		$document = new Document();
 		$document->setCreator($user);
-		$document->setType($this->documentRepository->getType(Document::TYPE_TRANSFER));
+		$document->setType($type);
 		$document->setCreatedAt(new \DateTime());
 		$document->setNotice($dto->getNotice());
+		$document->setStatus(Document::STATUS_CREATED);
 
-		$this->transferDocumentType->initContext($document, $dto);
+		$type->initContext($document, $dto);
 		$this->documentRepository->save($document);
 
-		$document->execute();
+		$document->execute($user);
 
 		$this->documentRepository->save($document);
 

@@ -12,7 +12,7 @@ $di = $bootstrap->getContainer();
 
 $oauth2 = new oauth2\Server();
 
-$oauth2->registerGrant('bearer', new oauth2\grants\BearerGrant(
+$oauth2->registerGrant(oauth2\Server::GRANT_BEARER, new oauth2\grants\BearerGrant(
 	$di->get('sessionRepository'),
 	$di->get('userRepository')
 ));

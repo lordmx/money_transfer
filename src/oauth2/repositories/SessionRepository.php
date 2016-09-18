@@ -106,6 +106,7 @@ class SessionRepository extends AbstractRepository implements RepositoryInterfac
 		}
 
 		$session->setScopes($scopes);
+		$session->getUser()->setScopes($scopes);
 	}
 
 	/**
@@ -129,5 +130,7 @@ class SessionRepository extends AbstractRepository implements RepositoryInterfac
 		}
 
 		$this->associateScopes($entity);
+
+		return $entity;
 	}
 }

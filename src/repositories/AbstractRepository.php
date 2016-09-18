@@ -5,7 +5,7 @@ namespace repositories;
 use entities\Entity;
 use dto\DtoInterface;
 use gateways\GatewayInterface;
-use repositories\exceptions;
+use repositories\exceptions\ValidationException;
 use cache\CacheInterface;
 
 abstract class AbstractRepository
@@ -50,6 +50,7 @@ abstract class AbstractRepository
 	 */
 	public function findAll($limit = 10, $offset = 0)
 	{
+		$result = [];
 		$items = $this->gateway->findByCriteria([], $limit, $offset);
 
 		foreach ($items as $map) {
@@ -143,10 +144,18 @@ abstract class AbstractRepository
 			$dirty = $entity->getDirty();
 
 			if ($dirty) {
-				$this->gateway->update($entity->getId(), $dirty);
+				$data = [];
+				$map = $entity->toMap();
+
+				foreach ($dirty as $field) {
+					$data[$field] = $map[$field];
+				}
+
+				$this->gateway->update($entity->getId(), $data);
 			}
 		} else {
-			$this->gateway->insert($entity->toMap());
+			$id = $this->gateway->insert($entity->toMap());
+			$entity->setId($id);
 		}
 
 		return $entity;

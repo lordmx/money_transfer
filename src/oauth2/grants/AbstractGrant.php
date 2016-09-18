@@ -12,12 +12,12 @@ abstract class AbstractGrant
 	/**
 	 * @var SessionRepository
 	 */
-	private $sessionRepository;
+	protected $sessionRepository;
 
 	/**
 	 * @var UserRepository
 	 */
-	private $userRepository;
+	protected $userRepository;
 
 	/**
 	 * @param SessionRepository $sessionRepository
@@ -34,6 +34,6 @@ abstract class AbstractGrant
 	 */
 	protected function throwUnauthorizedHttpException()
 	{
-		return new UnauthorizedHttpException('Authorization required');
+		throw new UnauthorizedHttpException('Authorization required');
 	}
 }

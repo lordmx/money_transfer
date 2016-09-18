@@ -26,7 +26,7 @@ abstract class AbstractGateway
 	public function findById($id)
 	{
 		$pk = $this->getPrimaryKey();
-		$row = $this->conn->fetchArray('SELECT * FROM ' . $this->getTable() . ' WHERE ' . $pk . ' = ?', [$id]);
+		$row = $this->conn->fetchAssoc('SELECT * FROM ' . $this->getTable() . ' WHERE ' . $pk . ' = ?', [$id]);
 
 		if (!$row) {
 			return $row;
@@ -44,7 +44,7 @@ abstract class AbstractGateway
 	public function findByCriteria(array $criteria, $limit = 10, $offset = 0)
 	{
 		$result = [];
-		$sql = 'SELECT * FROM ' . $this->getTabel();
+		$sql = 'SELECT * FROM ' . $this->getTable();
 
 		if ($criteria) {
 			$sql .= $this->getSqlFromCriteria($criteria);
@@ -54,8 +54,7 @@ abstract class AbstractGateway
 			$limit = 10;
 		}
 
-		$sql .= ' LIMIT ' . (int)$limit . ',' . (int)$offset;
-		
+		$sql .= ' LIMIT ' . (int)$offset . ', ' . (int)$limit;		
 		$rows = $this->conn->fetchAll($sql);
 
 		foreach ($rows as $row) {
@@ -71,7 +70,7 @@ abstract class AbstractGateway
 	 */
 	public function countByCriteria(array $criteria)
 	{
-		$sql = 'SELECT COUNT(' . $this->getPrimaryKey() . ') FROM ' . $this->getTabel();
+		$sql = 'SELECT COUNT(' . $this->getPrimaryKey() . ') FROM ' . $this->getTable();
 
 		if ($criteria) {
 			$sql .= $this->getSqlFromCriteria($criteria);
@@ -103,7 +102,7 @@ abstract class AbstractGateway
 	public function update($id, array $data)
 	{
 		$criteria = [$this->getPrimaryKey() => $id];
-		$this->conn->update($this->getTable(), $data, $criteria);
+		$this->conn->update($this->getTable(), $this->map($data), $criteria);
 	}
 
 	/**
@@ -170,8 +169,8 @@ abstract class AbstractGateway
 		$fields = array_keys($criteria);
 
 		for ($i = 0, $count = count($fields); $i < $count; $i++) {
+			$value = $criteria[$fields[$i]];
 			$field = $this->normalizeField($fields[$i]);
-			$value = $criteria[$field];
 			$operand = '= ?';
 
 			if (strpos($field, '?') !== false) {
@@ -191,11 +190,11 @@ abstract class AbstractGateway
 			}
 
 			$where = $field . ($operand ? ' ' . $operand : '');
-			$where = str_replace('?', $value, $operand);
+			$where = str_replace('?', $value, $where);
 
 			$sql .= $where;
 
-			if ($i < $count - 2) {
+			if ($i < $count - 1) {
 				$sql .= ' AND ';
 			}
 		}
@@ -250,5 +249,5 @@ abstract class AbstractGateway
 	/**
      * @return string
      */
-	abstract public function getTable();
+	abstract protected function getTable();
 }

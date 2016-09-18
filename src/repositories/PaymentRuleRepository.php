@@ -63,16 +63,18 @@ class PaymentRuleRepository extends AbstractRepository implements RepositoryInte
 		$entity = parent::populateEntity($map);
 
 		if (isset($map['sourceWalletId'])) {
-			$this->setSourceWallet($this->getWallet($map['sourceWalletId']));
+			$entity->setSourceWallet($this->getWallet($map['sourceWalletId']));
 		} else {
 			throw new IntegrityException('Source wallet is empty or missing');
 		}
 
 		if (isset($map['targetWalletId'])) {
-			$this->setTargetWallet($this->getWallet($map['targetWalletId']));
+			$entity->setTargetWallet($this->getWallet($map['targetWalletId']));
 		} else {
 			throw new IntegrityException('Target wallet is empty or missing');
 		}
+
+		return $entity;
 	}
 
 	/**

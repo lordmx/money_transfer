@@ -7,7 +7,7 @@ class ExchangeGateway extends AbstractGateway implements GatewayInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function getTable()
+	protected function getTable()
 	{
 		return 'exchange';
 	}
