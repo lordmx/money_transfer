@@ -2,6 +2,11 @@
 
 namespace cache;
 
+/**
+ * Null-кэшер, может быть использован как заглушка для временного отключения кэширования.
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class NullCache implements CacheInterface
 {
 	/**

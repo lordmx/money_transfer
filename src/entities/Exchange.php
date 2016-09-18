@@ -2,6 +2,11 @@
 
 namespace entities;
 
+/**
+ * Сущность, которая хранит информацию о соотношении курса обной валюты к другой (курса валют).
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class Exchange extends AbstractEntity implements Entity
 {
 	/**

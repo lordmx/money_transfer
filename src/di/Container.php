@@ -2,19 +2,30 @@
 
 namespace di;
 
+/**
+ * Простейший DI-контейнер для хранения и построения зависимостей.
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class Container
 {
 	/**
+	 * Зарегистрированные сервисы
+	 *
 	 * @var array
 	 */
 	private $services = [];
 
 	/**
+	 * Сервисы, которые загружаютс "лениво" (будут построены при первом обращении)
+	 *
 	 * @var \Closure[]
 	 */
 	private $lazy = [];
 
 	/**
+	 * Зарегистрировать сервис
+	 *
 	 * @param string $name
 	 * @param mixed $service
 	 */
@@ -24,6 +35,8 @@ class Container
 	}
 
 	/**
+	 * Определить стратегию "ленивой" загрузки сервиса
+	 *
 	 * @param string $name
 	 * @param \Closure $callback
 	 */
@@ -33,6 +46,8 @@ class Container
 	}
 
 	/**
+	 * Получить сервис и/или загрузить его перед этим (если сервис еще не был загружен)
+	 *
 	 * @param string $name
 	 * @return mixed
 	 * @throws Exception

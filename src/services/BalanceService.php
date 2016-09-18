@@ -6,6 +6,11 @@ use repositories\TransactionRepository;
 use entities\User;
 use entities\Wallet;
 
+/**
+ * Сервис для получения баланса пользователя
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class BalanceService
 {
 	/**
@@ -22,6 +27,8 @@ class BalanceService
 	}
 
 	/**
+	 * Получить баланс пользователя по кошельку
+	 *
 	 * @param User $user
 	 * @param Wallet $wallet
 	 */

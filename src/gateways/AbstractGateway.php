@@ -4,9 +4,16 @@ namespace gateways;
 
 use helpers\HelperString;
 
+/**
+ * Абстрактный шлюз таблицы БД, реализует базовую логику получения данных, вставки, удаления и изменения рядов. 
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 abstract class AbstractGateway
 {
 	/**
+	 * Ресурс соединения с БД
+	 *
 	 * @var \Doctrine\DBAL\Connection 
 	 */
 	protected $conn;
@@ -20,6 +27,8 @@ abstract class AbstractGateway
 	}
 
 	/**
+     * Получить запись по ее идентификатору
+     *
 	 * @param int $id
 	 * @return array
 	 */
@@ -36,6 +45,9 @@ abstract class AbstractGateway
 	}
 
 	/**
+	 * Получить ряды по набору критериев, переданных в виде ассоциативного массива, ограничить выборку с учетом количества рядов
+	 * и смещения сначала выборки
+	 *
 	 * @param array $criteria
 	 * @param int $limit
 	 * @param int $offset
@@ -65,6 +77,8 @@ abstract class AbstractGateway
 	}
 
 	/**
+	 * Получить количество записей, попадающих под набор критериев, переданных в виде ассоциативного массива
+	 *
 	 * @param array $criteria
 	 * @return int
 	 */
@@ -86,6 +100,8 @@ abstract class AbstractGateway
 	}
 
 	/**
+	 * Вставить новую запись
+	 *
 	 * @param array $data
 	 * @return int
 	 */
@@ -96,6 +112,8 @@ abstract class AbstractGateway
 	}
 
 	/**
+	 * Обновить данные записи по ее идентификатору
+	 *
 	 * @param int $id
 	 * @param array $data
 	 */
@@ -106,6 +124,8 @@ abstract class AbstractGateway
 	}
 
 	/**
+	 * Удалить запись по ее идентификатору
+	 *
 	 * @param int $id
 	 */
 	public function delete($id)

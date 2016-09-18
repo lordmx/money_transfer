@@ -8,6 +8,11 @@ use entities\Document;
 use entities\User;
 use dto\TransferDto;
 
+/**
+ * Сервис для перевода средств между пользователями
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class TransferService
 {
 	/**
@@ -24,6 +29,8 @@ class TransferService
 	}
 
 	/**
+     * Перевести данные от пользователя к пользователю (через создание документа на перевод)
+     *
 	 * @param User $user
 	 * @param TransferDto $dto
 	 * @return Document

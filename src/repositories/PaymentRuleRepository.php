@@ -7,6 +7,11 @@ use entities\PaymentRule;
 use repositories\exceptions\IntegrityException;
 use entities\Wallet;
 
+/**
+ * Репозиторий сущностей для сущности платежных правил (сущность PaymentRule)
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class PaymentRuleRepository extends AbstractRepository implements RepositoryInterface
 {
 	/**
@@ -34,6 +39,8 @@ class PaymentRuleRepository extends AbstractRepository implements RepositoryInte
 	}
 
 	/**
+	 * Получить платежное правило для пары кошельков
+	 *
 	 * @param int $sourceWalletId
 	 * @param int $targetWalletId
 	 * @return PaymentRule|null

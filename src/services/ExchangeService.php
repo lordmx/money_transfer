@@ -4,6 +4,11 @@ namespace services;
 
 use repositories\ExchangeRepository;
 
+/**
+ * Сервис для получения курса валют
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class ExchangeService
 {
 	/**
@@ -20,6 +25,8 @@ class ExchangeService
 	}
 
 	/**
+	 * Посчитать итогую сумму с учетом курса валют
+	 *
 	 * @param string $sourceId
 	 * @param string $targetId
 	 * @param float $amount

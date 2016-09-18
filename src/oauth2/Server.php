@@ -7,6 +7,11 @@ use oauth2\http\RequestInterface;
 use oauth2\entities\Session;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
+/**
+ * Репозиторий сущностей для сущности разрешений API (сущность Scope)
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class Server
 {
 	const GRANT_BEARER = 'bearer';
@@ -17,6 +22,8 @@ class Server
 	private $grants = [];
 
 	/**
+	 * Регистрация способа авторизации 
+	 *
 	 * @param string $name
 	 * @param GrantInterface $grant
 	 */
@@ -26,6 +33,8 @@ class Server
 	}
 
 	/**
+	 * Получения сессии или создание новой сессии через переданный oauth2 grant (получаемых из HTTP-заголовка Authorization)
+	 *
 	 * @param RequestInterface $request
 	 * @return Session
 	 * @throws UnauthorizedHttpException

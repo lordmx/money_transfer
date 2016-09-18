@@ -2,6 +2,11 @@
 
 namespace cache;
 
+/**
+ * Интерфейс простой системы кэширования. Может быть использована для кэширования, например, результатов работы шлюзов таблиц
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 interface CacheInterface
 {
 	/**

@@ -2,6 +2,11 @@
 
 namespace gateways;
 
+/**
+ * Шлюз для таблицы движения средств по кошелькам (transactions)
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class TransactionGateway extends AbstractGateway implements GatewayInterface
 {
 	/**
@@ -13,6 +18,8 @@ class TransactionGateway extends AbstractGateway implements GatewayInterface
 	}
 
 	/**
+     * Получить баланс (как сумма движения пользователя по кошельку)
+	 *
 	 * @param int $userId
 	 * @param int $walletId
 	 * @return float

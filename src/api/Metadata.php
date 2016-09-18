@@ -2,24 +2,37 @@
 
 namespace api;
 
+/**
+ * Метаданные результата выполнения API-метода
+ * 
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class Metadata
 {
 	/**
+	 * Требуемое количество сущностей
+	 *
 	 * @var int
 	 */
 	private $limit;
 
 	/**
+	 * Смещения сначала выборки
+	 *
 	 * @var int
 	 */
 	private $offset;
 
 	/**
+	 * Количество сущностей, которое может быть полученно по заданным критериям запроса
+	 *
 	 * @var int
 	 */
 	private $count;
 
 	/**
+	 * Пользовательские данные
+	 *
 	 * @var array
 	 */
 	private $data = [];

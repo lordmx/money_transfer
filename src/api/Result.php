@@ -5,19 +5,30 @@ namespace api;
 use entities\Entity;
 use helpers\HelperString;
 
+/**
+ * Результат выполнения API-метода
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class Result
 {
 	/**
+	 * Название REST-ресурса
+	 *
 	 * @var string
 	 */
 	private $resource;
 
 	/**
+	 * Сущности
+	 *
 	 * @var array
 	 */
 	private $vector = [];
 
 	/**
+	 * Метаданные
+	 *
 	 * @var Metadata
 	 */
 	private $metadata;

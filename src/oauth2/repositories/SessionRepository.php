@@ -12,6 +12,11 @@ use repositories\UserRepository;
 use oauth2\repositories\ScopeRepository;
 use repositories\exceptions\IntegrityException;
 
+/**
+ * Репозиторий сущностей для сущности сессии пользователя API (сущность Session)
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class SessionRepository extends AbstractRepository implements RepositoryInterface
 {
 	/**
@@ -55,6 +60,8 @@ class SessionRepository extends AbstractRepository implements RepositoryInterfac
 	}
 
 	/**
+	 * Получить действующую сессию пользовтеля
+	 *
 	 * @param User $user
 	 * @return Session|null
 	 */
@@ -71,6 +78,8 @@ class SessionRepository extends AbstractRepository implements RepositoryInterfac
 	}
 
 	/**
+	 * Создать новую сессию для пользователя
+	 *
 	 * @param User $user
 	 * @return Session
 	 */

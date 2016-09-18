@@ -9,6 +9,42 @@ use \Symfony\Component\HttpFoundation\Request;
 use \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use dto\HistoryDto;
 
+/**
+ * API-метод для получения истории движений пользователя по кошелькам (в качестве пользователя будет взят текущий 
+ * авторизованный пользователь).
+ *
+ * GET /api/v1/users/transactions?wallet_id=1&date_from=2016-01-01T10:00:00&date_to=2016-01-01T11:00:00&limit=10&offset=1
+ *
+ * Пример ответа:
+ *
+ * {
+ *   "resultset": {
+ *	   "metadata": {
+ *	     "limit": 10,
+ *       "offset": 0,
+ *       "count": 2
+ *     }
+ *   },
+ *   "balance": [
+ *     {
+ *       "id": 1,	  
+ *	     "wallet_id": 1,
+ *       "amount": 100,
+ *       "document_id": 1,
+ *       "created_at": "2016-01-01T10:00:00"
+ *     },
+ *     {
+ *       "id": 2,	  
+ *	     "wallet_id": 1,
+ *       "amount": -50,
+ *       "document_id": 2,
+ *       "created_at": "2016-01-01T11:00:00"	
+ *     }
+ *   ]	 
+ * }
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class UserHistoryHandler extends AbstractHandler implements HandlerInterface
 {
 	/**

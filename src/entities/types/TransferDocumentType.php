@@ -13,6 +13,17 @@ use services\ExchangeService;
 use dto\DtoInterface;
 use dto\TransferDto;
 
+/**
+ * Тип документа перевода средств от пользователя к пользователю. Суть операции: создания одной операции на списания средств для исходного
+ * кошелька и сходного пользователя и операции зачисления для целевого пользователя и кошелька, при условии, что на исходном кошельке 
+ * достаточно средвств для совершения операции.
+ * 
+ * Перевод может быть как в рамках одного кошелька так и в рамках разных кошельков (включая мультивалютные переводы).
+ * Для проверки корректности операции используются платежные правила. Для получения суммы перевода для мультивалютных операций 
+ * используется сервис получения курсов валют.  
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class TransferDocumentType implements DocumentType
 {
 	/**
@@ -91,6 +102,7 @@ class TransferDocumentType implements DocumentType
 			return $document;
 		}
 
+		// пытаем найти платежное правило для пары кошельков
 		$paymentRule = $this->paymentRuleRepository->findByWalletIds(
 			$dto->getSourceWalletId(),
 			$dto->getTargetWalletId()
@@ -141,12 +153,16 @@ class TransferDocumentType implements DocumentType
 
 		$totalAmount = $amount;
 
+		// если платежным правилом определена комиссия, то считаем ее сверху суммы списания
 		if ($paymentRule->getCommission()) {
 			$totalAmount *= (1 + $paymentRule->getCommission() / 100);
 		}
 
 		$targetAmount = $amount;
 
+		// если платежным правилом определен кросс-курс для операции, то используем его для получения суммы зачисления,
+		// иначе получаем сумму через сервис валютных курсов (который для не мультивалютных операций вернет исходную сумму,
+		// а для мультивалютных вычислит сумму с использованием заданного курса)
 		if ($paymentRule->getCrossRate()) {
 			$targetAmount *= $paymentRule->getCrossRate();
 		} else {
@@ -157,6 +173,7 @@ class TransferDocumentType implements DocumentType
 			);
 		}
 
+		// создаем движения для исходного пользователя и кошелька
 		$sourceTransaction = new Transaction();
 		$sourceTransaction->setDocument($document);
 		$sourceTransaction->setWallet($paymentRule->getSourceWallet());
@@ -165,6 +182,7 @@ class TransferDocumentType implements DocumentType
 		$sourceTransaction->setAmount(-$totalAmount);
 		$this->transactionRepository->save($sourceTransaction);
 
+		// создаем движения для целевого пользователя и кошелька
 		$targetTransaction = new Transaction();
 		$targetTransaction->setDocument($document);
 		$targetTransaction->setWallet($paymentRule->getTargetWallet());
@@ -173,6 +191,7 @@ class TransferDocumentType implements DocumentType
 		$targetTransaction->setAmount($targetAmount);
 		$this->transactionRepository->save($targetTransaction);
 
+		// помечаем документ как исполненный
 		$document->markAsCompleted($user);
 	}
 
@@ -181,10 +200,12 @@ class TransferDocumentType implements DocumentType
 	 */
 	public function backward(Document $document)
 	{
+		// Получаем движения по кошелькам, связанные с данным документом и удаляем их
 		foreach ($this->transactionRepository->findByDocument($document) as $transaction) {
 			$this->transactionRepository->delete($transaction);
 		}
 
+		// помечаем документ доступ для последующего выполнения
 		$document->markAsCreated();
 
 		return $document;

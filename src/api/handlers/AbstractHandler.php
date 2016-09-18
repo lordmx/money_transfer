@@ -6,6 +6,11 @@ use di\Container;
 use entities\User;
 use \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
+/**
+ * Абстрактный обработчик API-метода. Определяем HTTP-глагол метода, его роут и логику. 
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 abstract class AbstractHandler
 {
 	/**
@@ -67,6 +72,9 @@ abstract class AbstractHandler
 	}
 
 	/**
+	 * Убедить, что у текущего пользователя есть необходимые для доступа к методу oauth2-разрешения. В противном случае
+	 * породит исключение.
+	 *
 	 * @param User $user
 	 * @return bool
 	 * @throws AccessDeniedHttpException

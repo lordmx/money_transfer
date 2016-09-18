@@ -4,6 +4,11 @@ namespace repositories;
 
 use entities\User;
 
+/**
+ * Репозиторий сущностей для сущности пользователя (сущность User)
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class UserRepository extends AbstractRepository implements RepositoryInterface
 {
 	/**
@@ -15,6 +20,8 @@ class UserRepository extends AbstractRepository implements RepositoryInterface
 	}
 
 	/**
+	 * Найти пользователя по токену доступа
+	 *
 	 * @param string $accessToken
 	 * @return User|null
 	 */

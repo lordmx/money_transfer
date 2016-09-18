@@ -2,6 +2,11 @@
 
 namespace oauth2\grants;
 
+/**
+ * Авторизация пользователя через oauth2 bearer grant со статическим токеном доступа
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class BearerGrant extends AbstractGrant implements GrantInterface
 {
 	/**

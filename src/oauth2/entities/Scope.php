@@ -5,6 +5,11 @@ namespace oauth2\entities;
 use entities\AbstractEntity;
 use entities\Entity;
 
+/**
+ * Сущность, которая предствляет ограничения для API
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class Scope extends AbstractEntity implements Entity
 {
 	/**
@@ -13,6 +18,8 @@ class Scope extends AbstractEntity implements Entity
 	private $id;
 
 	/**
+	 * Название разрешения
+	 *
 	 * @var string
 	 */
 	private $alias;

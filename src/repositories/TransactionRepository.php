@@ -10,6 +10,11 @@ use entities\Document;
 use dto\HistoryDto;
 use repositories\exceptions\IntegrityException;
 
+/**
+ * Репозиторий сущностей для сущности движения средств по кошелькам (сущность Transaction)
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class TransactionRepository extends AbstractRepository implements RepositoryInterface
 {
 	/**
@@ -55,6 +60,8 @@ class TransactionRepository extends AbstractRepository implements RepositoryInte
 	}
 
 	/**
+	 * Получить историю движения через DTO
+	 *
 	 * @param HistoryDto $dto
 	 * @param int $limit
 	 * @param int $offset
@@ -74,6 +81,8 @@ class TransactionRepository extends AbstractRepository implements RepositoryInte
 	}
 
 	/**
+	 * Получить количество операций, попадающих под критерии, представленные в виде DTO
+	 *
 	 * @param HistoryDto $dto
 	 * @return int
 	 */
@@ -84,6 +93,8 @@ class TransactionRepository extends AbstractRepository implements RepositoryInte
 	}
 
 	/**
+	 * Получить транзакции, связанные с документом
+	 *
 	 * @param Document $document
 	 * @return Transaction[]
 	 */
@@ -101,6 +112,8 @@ class TransactionRepository extends AbstractRepository implements RepositoryInte
 	}
 
 	/**
+	 * Получить баланс пользователя по кошельку
+	 *
 	 * @param User $user
 	 * @param Wallet $wallet
 	 * @return float

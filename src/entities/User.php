@@ -4,6 +4,11 @@ namespace entities;
 
 use oauth2\entities\Scope;
 
+/**
+ * Пользователь системы 
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class User extends AbstractEntity implements Entity
 {
 	/**
@@ -12,11 +17,15 @@ class User extends AbstractEntity implements Entity
 	private $id;
 
 	/**
+	 * Токен доступа пользователя для oauth2 
+	 *
 	 * @var string
 	 */
 	private $accessToken;
 
 	/**
+	 * Разрешенные пользователю ресурсы oauth2
+	 *
 	 * @var Scope[]
 	 */
 	private $scopes = [];

@@ -6,6 +6,11 @@ use entities\User;
 use entities\AbstractEntity;
 use entities\Entity;
 
+/**
+ * Сущность, которая предствляет сессию пользователя в REST-сервере
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class Session extends AbstractEntity implements Entity
 {
 	/**
@@ -14,6 +19,8 @@ class Session extends AbstractEntity implements Entity
 	private $id;
 
 	/**
+	 * Строковой идентификатор сессии
+	 *
 	 * @var string
 	 */
 	private $hash;
@@ -29,6 +36,8 @@ class Session extends AbstractEntity implements Entity
 	private $user;
 
 	/**
+	 * Набор разрешений, доступных пользователю
+	 *
 	 * @var Scope[]
 	 */
 	private $scopes = [];

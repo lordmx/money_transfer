@@ -7,6 +7,11 @@ use repositories\UserRepository;
 use oauth2\http\RequestInterface;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
+/**
+ * Абстрактный способ авторизации пользователя при oauth2
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 abstract class AbstractGrant
 {
 	/**

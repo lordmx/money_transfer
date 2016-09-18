@@ -2,9 +2,16 @@
 
 namespace helpers;
 
+/**
+ * Хелпер для работы со строками
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class HelperString
 {
 	/**
+	 * Привести строку от вида "некаяСтрока"" к виду "некая_строка""
+	 *
 	 * @param string $string
 	 * @return string
 	 */
@@ -29,6 +36,8 @@ class HelperString
 	}
 
 	/**
+	 * Привести строку от вида "некая_строка" к виду "некаяСтрока"
+	 *
 	 * @param string
 	 * @return string
 	 */

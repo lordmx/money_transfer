@@ -8,6 +8,37 @@ use entities\User;
 use \Symfony\Component\HttpFoundation\Request;
 use \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * API-метод для получения баланса пользователя по кошелькам (в качестве пользователя будет взят текущий авторизованный пользователь).
+ *
+ * GET /api/v1/users/balance?wallet_id=1&limit=10&offset=1
+ *
+ * Пример ответа:
+ *
+ * {
+ *   "resultset": {
+ *	   "metadata": {
+ *	     "limit": 10,
+ *       "offset": 0,
+ *       "count": 2
+ *     }
+ *   },
+ *   "balance": [
+ *     {
+ *	     "wallet_id": 1,
+ *       "balance": 100,
+ *       "currency_id": "RUB"
+ *     },
+ *     {
+ *       "wallet_id": 2,
+ *       "balance": 0,
+ *       "currency_id": "RUB" 	
+ *     }
+ *   ]	 
+ * }
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class UserBalanceHandler extends AbstractHandler implements HandlerInterface
 {
 	/**

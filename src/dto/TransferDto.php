@@ -4,6 +4,11 @@ namespace dto;
 
 use dto\exceptions\ValidationException;
 
+/**
+ * Объект запроса для API-метода для перевода средств от пользователя к пользователю 
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class TransferDto implements DtoInterface
 {
 	/**

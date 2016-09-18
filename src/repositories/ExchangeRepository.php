@@ -4,6 +4,11 @@ namespace repositories;
 
 use entities\Exchange;
 
+/**
+ * Репозиторий сущностей для сущности курса валют (сущность Exchange)
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class ExchangeRepository extends AbstractRepository implements RepositoryInterface
 {
 	/**
@@ -15,6 +20,8 @@ class ExchangeRepository extends AbstractRepository implements RepositoryInterfa
 	}
 
 	/**
+	 * Найти сущность курса для пары валют
+	 *
 	 * @param string $sourceId
 	 * @param string $targetId
 	 * @return Exchange

@@ -8,9 +8,16 @@ use entities\User;
 use entities\types\DocumentType;
 use repositories\exceptions\IntegrityException;
 
+/**
+ * Репозиторий сущностей для сущности документа (сущность Document)
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class DocumentRepository extends AbstractRepository implements RepositoryInterface
 {
 	/**
+	 * Зарегистрированные типы документов
+	 *
 	 * @var DocumentType[]
 	 */
 	private $types = [];
@@ -40,6 +47,8 @@ class DocumentRepository extends AbstractRepository implements RepositoryInterfa
 	}
 
 	/**
+	 * Получить зарегистрированный обработчик типов документа
+	 *
 	 * @param string $name
 	 * @return DocumentType
 	 */
@@ -49,6 +58,8 @@ class DocumentRepository extends AbstractRepository implements RepositoryInterfa
 	}
 
 	/**
+	 * Зарегистрировать типы документов
+	 *
 	 * @param DocumentType[] $types
 	 */
 	public function setTypes(array $types)

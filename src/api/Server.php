@@ -13,6 +13,11 @@ use api\Metadata;
 use \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use \Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
+/**
+ * REST-сервер для обработки API-запросов.
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class Server
 {
 	const METHOD_GET = 'GET';
@@ -35,32 +40,44 @@ class Server
 	 */
 	private $app;
 
-	/**
+	/** 
+	 * Oauth2 сервер для авторизации пользователя
+	 * 
 	 * @var Oauth2Server
 	 */
 	private $oauth2;
 
 	/**
+	 * Зарегистрированные обработчики методов
+	 *
 	 * @var array
 	 */
 	private $handlers = [];
 
 	/**
+	 * Oauth2-сессия текущего пользователя
+	 * 
 	 * @var Session
 	 */
 	private $session;
 
 	/**
+	 * Текущий HTTP-запрос
+	 *
 	 * @var Request
 	 */
 	private $request;
 
 	/**
+	 * Префикс для URL запроса
+	 *
 	 * @var string
 	 */
 	private $prefix = '/api/';
 
 	/**
+	 * Версия API
+	 *
 	 * @var string
 	 */
 	private $version = 'v1';
@@ -77,10 +94,14 @@ class Server
 		$this->request = $request;
 	}
 
+	/**
+	 * Инициализация middleware для REST-сервера
+	 */
 	public function init()
 	{
 		$app = $this->app;
 
+		// получения текущего пользователя через oauth2 bearer grant до начала обработки запроса
 		$app->before(function (Request $request, Application $application) {
 			$session = $this->oauth2->createSession(new FoundationAdapterRequest($request));
 			$this->session = $session;
@@ -90,15 +111,29 @@ class Server
 			}
 		});
 
+		// представление ответа API-метода в виде JSON (через HTTP-заголовок)
 		$app->after(function (Request $request, Response $response) {
 			$response->headers->set('Content-Type', 'application/json');
 			return $response;
 		});
 
+		// правило обработки ошибок и формирования ответа на ошибку
 		$app->error(function (\Exception $e, Request $request, $code) use ($app) {
 		    $message = $e->getMessage();
 
 		    switch ($code) {
+		    	case 500:
+		    		if (!$message) {
+		    			$message = 'Internal server error';
+		    		}
+
+		    		break;
+		    	case 400:
+		    		if (!$message) {
+		    			$message = 'Bad request';
+		    		}
+
+		    		break;
 		    	case 404:
 		    		$message = 'Not found';
 		    		break;
@@ -136,6 +171,8 @@ class Server
 	}
 
 	/**
+	 * Регистрация обработчика метода
+     *
 	 * @param HandlerInterface $handler
 	 */
 	public function registerHandler(HandlerInterface $handler)

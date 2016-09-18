@@ -8,6 +8,11 @@ use gateways\GatewayInterface;
 use repositories\exceptions\ValidationException;
 use cache\CacheInterface;
 
+/**
+ * Абстрактный репозиторий сущностей (реализует базовую логику работы с сущностями)
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 abstract class AbstractRepository
 {
 	/**

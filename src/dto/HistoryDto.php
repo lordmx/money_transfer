@@ -4,6 +4,11 @@ namespace dto;
 
 use dto\exceptions\ValidationException;
 
+/**
+ * Объект запроса для API-метода получения истории движения средств пользователя 
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class HistoryDto implements DtoInterface
 {
 	/**
@@ -95,7 +100,7 @@ class HistoryDto implements DtoInterface
 	 */
 	public function setDateFrom(\DateTime $date)
 	{
-		$this->dateFrom = $data;
+		$this->dateFrom = $date;
 	}
 
 	/**
