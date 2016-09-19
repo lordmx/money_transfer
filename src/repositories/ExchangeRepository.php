@@ -11,44 +11,44 @@ use entities\Exchange;
  */
 class ExchangeRepository extends AbstractRepository implements RepositoryInterface
 {
-	/**
-	 * @inheritdoc
-	 */
-	protected function createEntity()
-	{
-		return new Exchange();
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function createEntity()
+    {
+        return new Exchange();
+    }
 
-	/**
-	 * Найти сущность курса для пары валют
-	 *
-	 * @param string $sourceId
-	 * @param string $targetId
-	 * @return Exchange
-	 */
-	public function findByPair($sourceId, $targetId)
-	{
-		if ($sourceId == $targetId) {
-			$exchange = new Exchange();
+    /**
+     * Найти сущность курса для пары валют
+     *
+     * @param string $sourceId
+     * @param string $targetId
+     * @return Exchange
+     */
+    public function findByPair($sourceId, $targetId)
+    {
+        if ($sourceId == $targetId) {
+            $exchange = new Exchange();
 
-			$exchange->setTargetCurrencyId($sourceId);
-			$exchange->setSourceCurrencyId($sourceId);
-			$exchange->setRate(1.0);
+            $exchange->setTargetCurrencyId($sourceId);
+            $exchange->setSourceCurrencyId($sourceId);
+            $exchange->setRate(1.0);
 
-			return $exchange;
-		}
+            return $exchange;
+        }
 
-		$criteria = [
-			'sourceCurrencyId' => $sourceId,
-			'targetCurrencyId' => $targetId,
-		];
+        $criteria = [
+            'sourceCurrencyId' => $sourceId,
+            'targetCurrencyId' => $targetId,
+        ];
 
-		$rows = $this->gateway->findByCriteria($criteria);
+        $rows = $this->gateway->findByCriteria($criteria);
 
-		if (!$rows) {
-			return null;
-		}
+        if (!$rows) {
+            return null;
+        }
 
-		return $this->populateEntity($rows[0]);
-	}
+        return $this->populateEntity($rows[0]);
+    }
 }

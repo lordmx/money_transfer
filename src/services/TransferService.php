@@ -15,45 +15,45 @@ use dto\TransferDto;
  */
 class TransferService
 {
-	/**
-	 * @var DocumentRepository
-	 */
-	private $documentRepository;
+    /**
+     * @var DocumentRepository
+     */
+    private $documentRepository;
 
-	/**
-	 * @param DocumentRepository $documentRepository
-	 */
-	public function __construct(DocumentRepository $documentRepository)
-	{
-		$this->documentRepository = $documentRepository;
-	}
+    /**
+     * @param DocumentRepository $documentRepository
+     */
+    public function __construct(DocumentRepository $documentRepository)
+    {
+        $this->documentRepository = $documentRepository;
+    }
 
-	/**
+    /**
      * Перевести данные от пользователя к пользователю (через создание документа на перевод)
      *
-	 * @param User $user
-	 * @param TransferDto $dto
-	 * @return Document
-	 */
-	public function transfer(User $user, TransferDto $dto)
-	{
-		$dto->setSourceUserId($user->getId());
-		$type = $this->documentRepository->getType(Document::TYPE_TRANSFER);
+     * @param User $user
+     * @param TransferDto $dto
+     * @return Document
+     */
+    public function transfer(User $user, TransferDto $dto)
+    {
+        $dto->setSourceUserId($user->getId());
+        $type = $this->documentRepository->getType(Document::TYPE_TRANSFER);
 
-		$document = new Document();
-		$document->setCreator($user);
-		$document->setType($type);
-		$document->setCreatedAt(new \DateTime());
-		$document->setNotice($dto->getNotice());
-		$document->setStatus(Document::STATUS_CREATED);
+        $document = new Document();
+        $document->setCreator($user);
+        $document->setType($type);
+        $document->setCreatedAt(new \DateTime());
+        $document->setNotice($dto->getNotice());
+        $document->setStatus(Document::STATUS_CREATED);
 
-		$type->initContext($document, $dto);
-		$this->documentRepository->save($document);
+        $type->initContext($document, $dto);
+        $this->documentRepository->save($document);
 
-		$document->execute($user);
+        $document->execute($user);
 
-		$this->documentRepository->save($document);
+        $this->documentRepository->save($document);
 
-		return $document;
-	}
+        return $document;
+    }
 }

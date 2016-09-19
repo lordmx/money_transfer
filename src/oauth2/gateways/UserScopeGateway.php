@@ -12,29 +12,29 @@ use gateways\GatewayInterface;
  */
 class UserScopeGateway extends AbstractGateway implements GatewayInterface
 {
-	/**
-	 * @inheritdoc
-	 */
-	protected function getTable()
-	{
-		return 'oauth2_user_scopes';
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function getTable()
+    {
+        return 'oauth2_user_scopes';
+    }
 
-	/**
-	 * Получить идентификаторы разрешений пользователя
-	 *
-	 * @param int $userId
-	 * @return int[]
-	 */
-	public function findUserScopeIds($userId)
-	{
-		$rows = $this->findByCriteria(['userId' => (int)$userId]);
-		$ids = [];
+    /**
+     * Получить идентификаторы разрешений пользователя
+     *
+     * @param int $userId
+     * @return int[]
+     */
+    public function findUserScopeIds($userId)
+    {
+        $rows = $this->findByCriteria(['userId' => (int)$userId]);
+        $ids = [];
 
-		foreach ($rows as $row) {
-			$ids[] = $row['scopeId'];
-		}
+        foreach ($rows as $row) {
+            $ids[] = $row['scopeId'];
+        }
 
-		return $ids;
-	}
+        return $ids;
+    }
 }

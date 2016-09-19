@@ -11,11 +11,11 @@ use entities\Wallet;
  */
 class WalletRepository extends AbstractRepository implements RepositoryInterface
 {
-	/**
-	 * @inheritdoc
-	 */
-	protected function createEntity()
-	{
-		return new Wallet();
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function createEntity()
+    {
+        return new Wallet();
+    }
 }

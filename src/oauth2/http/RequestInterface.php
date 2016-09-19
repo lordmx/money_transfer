@@ -9,19 +9,19 @@ namespace oauth2\http;
  */
 interface RequestInterface
 {
-	/**
-	 * Получить аргумент запроса
-	 *
-	 * @param string $key
-	 * @return mixed
-	 */
-	public function getParam($key);
+    /**
+     * Получить аргумент запроса
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public function getParam($key);
 
-	/**
-	 * Получить заголовок запроса
-	 *
-	 * @param string $name
-	 * @return string
-	 */
-	public function getHeader($name);
+    /**
+     * Получить заголовок запроса
+     *
+     * @param string $name
+     * @return string
+     */
+    public function getHeader($name);
 }

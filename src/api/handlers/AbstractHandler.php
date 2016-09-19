@@ -13,98 +13,98 @@ use \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
  */
 abstract class AbstractHandler
 {
-	/**
-	 * @var Container
-	 */
-	protected $di;
+    /**
+     * @var Container
+     */
+    protected $di;
 
-	/**
-	 * @var User
-	 */
-	protected $user;
+    /**
+     * @var User
+     */
+    protected $user;
 
-	/**
-	 * @param Container $di
-	 */
-	public function __construct(Container $di)
-	{
-		$this->di = $di;
-	}
+    /**
+     * @param Container $di
+     */
+    public function __construct(Container $di)
+    {
+        $this->di = $di;
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getMethod()
-	{
-		return \api\Server::METHOD_GET;
-	}
+    /**
+     * @inheritdoc
+     */
+    public function getMethod()
+    {
+        return \api\Server::METHOD_GET;
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function getScopes()
-	{
-		return [];
-	}
+    /**
+     * @inheritdoc
+     */
+    public function getScopes()
+    {
+        return [];
+    }
 
-	/**
-	 * @return User
-	 */
-	public function getUser()
-	{
-		return $this->user;
-	}
+    /**
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
 
-	/**
-	 * @return Container
-	 */
-	public function getContainer()
-	{
-		return $this->di;
-	}
+    /**
+     * @return Container
+     */
+    public function getContainer()
+    {
+        return $this->di;
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function setUser(User $user)
-	{
-		$this->user = $user;
-	}
+    /**
+     * @inheritdoc
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+    }
 
-	/**
-	 * Убедить, что у текущего пользователя есть необходимые для доступа к методу oauth2-разрешения. В противном случае
-	 * породит исключение.
-	 *
-	 * @param User $user
-	 * @return bool
-	 * @throws AccessDeniedHttpException
-	 */
-	public function ensureUserPermitted(User $user)
-	{
-		$handlerScopes = $this->getScopes();
+    /**
+     * Убедить, что у текущего пользователя есть необходимые для доступа к методу oauth2-разрешения. В противном случае
+     * породит исключение.
+     *
+     * @param User $user
+     * @return bool
+     * @throws AccessDeniedHttpException
+     */
+    public function ensureUserPermitted(User $user)
+    {
+        $handlerScopes = $this->getScopes();
 
-		if (!$handlerScopes) {
-			return true;
-		}
+        if (!$handlerScopes) {
+            return true;
+        }
 
-		$userScopes = $user->getScopes();
+        $userScopes = $user->getScopes();
 
-		if (!$userScopes) {
-			throw new AccessDeniedHttpException();
-		}
+        if (!$userScopes) {
+            throw new AccessDeniedHttpException();
+        }
 
-		$userScopeNames = [];
+        $userScopeNames = [];
 
-		foreach ($userScopes as $scope) {
-			$userScopeNames[] = $scope->getAlias();
-		}
+        foreach ($userScopes as $scope) {
+            $userScopeNames[] = $scope->getAlias();
+        }
 
-		foreach ($handlerScopes as $alias) {
-			if (!in_array($alias, $userScopeNames)) {
-				throw new AccessDeniedHttpException();
-			}
-		}
+        foreach ($handlerScopes as $alias) {
+            if (!in_array($alias, $userScopeNames)) {
+                throw new AccessDeniedHttpException();
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 }

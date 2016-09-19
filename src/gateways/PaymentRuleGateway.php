@@ -9,11 +9,11 @@ namespace gateways;
  */
 class PaymentRuleGateway extends AbstractGateway implements GatewayInterface
 {
-	/**
-	 * @inheritdoc
-	 */
-	protected function getTable()
-	{
-		return 'payment_rules';
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function getTable()
+    {
+        return 'payment_rules';
+    }
 }

@@ -14,31 +14,31 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
  */
 abstract class AbstractGrant
 {
-	/**
-	 * @var SessionRepository
-	 */
-	protected $sessionRepository;
+    /**
+     * @var SessionRepository
+     */
+    protected $sessionRepository;
 
-	/**
-	 * @var UserRepository
-	 */
-	protected $userRepository;
+    /**
+     * @var UserRepository
+     */
+    protected $userRepository;
 
-	/**
-	 * @param SessionRepository $sessionRepository
-	 * @param UserRepository $userRepository
-	 */
-	public function __construct(SessionRepository $sessionRepository, UserRepository $userRepository)
-	{
-		$this->userRepository = $userRepository;
-		$this->sessionRepository = $sessionRepository;
-	}
+    /**
+     * @param SessionRepository $sessionRepository
+     * @param UserRepository $userRepository
+     */
+    public function __construct(SessionRepository $sessionRepository, UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+        $this->sessionRepository = $sessionRepository;
+    }
 
-	/**
-	 * @throws UnauthorizedHttpException
-	 */
-	protected function throwUnauthorizedHttpException()
-	{
-		throw new UnauthorizedHttpException('Authorization required');
-	}
+    /**
+     * @throws UnauthorizedHttpException
+     */
+    protected function throwUnauthorizedHttpException()
+    {
+        throw new UnauthorizedHttpException('Authorization required');
+    }
 }

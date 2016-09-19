@@ -11,35 +11,35 @@ use repositories\ExchangeRepository;
  */
 class ExchangeService
 {
-	/**
-	 * @var ExchangeRepository
-	 */
-	private $exchangeRepository;
+    /**
+     * @var ExchangeRepository
+     */
+    private $exchangeRepository;
 
-	/**
-	 * @param ExchangeRepository $exchangeRepository
-	 */
-	public function __construct(ExchangeRepository $exchangeRepository)
-	{
-		$this->exchangeRepository = $exchangeRepository;
-	}
+    /**
+     * @param ExchangeRepository $exchangeRepository
+     */
+    public function __construct(ExchangeRepository $exchangeRepository)
+    {
+        $this->exchangeRepository = $exchangeRepository;
+    }
 
-	/**
-	 * Посчитать итогую сумму с учетом курса валют
-	 *
-	 * @param string $sourceId
-	 * @param string $targetId
-	 * @param float $amount
-	 * @return float
-	 */
-	public function calc($sourceId, $targetId, $amount)
-	{
-		$exchange = $this->exchangeRepository->findByPair($sourceId, $targetId);
+    /**
+     * Посчитать итогую сумму с учетом курса валют
+     *
+     * @param string $sourceId
+     * @param string $targetId
+     * @param float $amount
+     * @return float
+     */
+    public function calc($sourceId, $targetId, $amount)
+    {
+        $exchange = $this->exchangeRepository->findByPair($sourceId, $targetId);
 
-		if (!$exchange) {
-			return $rate;
-		}
+        if (!$exchange) {
+            return $rate;
+        }
 
-		return $exchange->calc($amount);
-	}
+        return $exchange->calc($amount);
+    }
 }

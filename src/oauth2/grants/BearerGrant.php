@@ -9,23 +9,23 @@ namespace oauth2\grants;
  */
 class BearerGrant extends AbstractGrant implements GrantInterface
 {
-	/**
-	 * @inheritdoc
-	 */
-	public function createSession($token)
-	{
-		$user = $this->userRepository->findByAccessToken($token);
+    /**
+     * @inheritdoc
+     */
+    public function createSession($token)
+    {
+        $user = $this->userRepository->findByAccessToken($token);
 
-		if (!$user) {
-			$this->throwUnauthorizedHttpException();
-		}
+        if (!$user) {
+            $this->throwUnauthorizedHttpException();
+        }
 
-		$session = $this->sessionRepository->findByUser($user);
+        $session = $this->sessionRepository->findByUser($user);
 
-		if (!$session) {
-			$session = $this->sessionRepository->createForUser($user);
-		}
+        if (!$session) {
+            $session = $this->sessionRepository->createForUser($user);
+        }
 
-		return $session;
-	}
+        return $session;
+    }
 }

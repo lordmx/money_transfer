@@ -6,5 +6,5 @@ use exceptions\BaseException;
 
 class Exception extends BaseException
 {
-	
+
 }

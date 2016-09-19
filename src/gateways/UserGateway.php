@@ -9,11 +9,11 @@ namespace gateways;
  */
 class UserGateway extends AbstractGateway implements GatewayInterface
 {
-	/**
-	 * @inheritdoc
-	 */
-	protected function getTable()
-	{
-		return 'users';
-	}
+    /**
+     * @inheritdoc
+     */
+    protected function getTable()
+    {
+        return 'users';
+    }
 }

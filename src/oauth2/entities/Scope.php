@@ -12,88 +12,88 @@ use entities\Entity;
  */
 class Scope extends AbstractEntity implements Entity
 {
-	/**
-	 * @var id
-	 */
-	private $id;
+    /**
+     * @var id
+     */
+    private $id;
 
-	/**
-	 * Название разрешения
-	 *
-	 * @var string
-	 */
-	private $alias;
+    /**
+     * Название разрешения
+     *
+     * @var string
+     */
+    private $alias;
 
-	/**
-	 * @inheritdoc
-	 */
-	public function validate()
-	{
-		if (!$this->alias) {
-			$this->errors[] = 'Alias is empty or missing';
-		}
+    /**
+     * @inheritdoc
+     */
+    public function validate()
+    {
+        if (!$this->alias) {
+            $this->errors[] = 'Alias is empty or missing';
+        }
 
-		return empty($this->errors);
-	}
+        return empty($this->errors);
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getAlias()
-	{
-		return $this->alias;
-	}
+    /**
+     * @return string
+     */
+    public function getAlias()
+    {
+        return $this->alias;
+    }
 
-	/**
-	 * @param int $id
-	 */
-	public function setId($id)
-	{
-		$this->id = $id;
-	}
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 
-	/**
-	 * @param string $alias
-	 */
-	public function setAlias($alias)
-	{
-		$this->alias = $alias;
-	}
+    /**
+     * @param string $alias
+     */
+    public function setAlias($alias)
+    {
+        $this->alias = $alias;
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function load(array $map)
-	{
-		if (isset($map['id'])) {
-			$this->setId((int)$map['id']);
-		}
+    /**
+     * @inheritdoc
+     */
+    public function load(array $map)
+    {
+        if (isset($map['id'])) {
+            $this->setId((int)$map['id']);
+        }
 
-		if (isset($map['alias'])) {
-			$this->setAlias($map['alias']);
-		}
-	}
+        if (isset($map['alias'])) {
+            $this->setAlias($map['alias']);
+        }
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function toMap()
-	{
-		if ($this->validate()) {
-			return [
-				'id' => $this->getId(),
-				'alias' => $this->getAlias(),
-			];
-		}
+    /**
+     * @inheritdoc
+     */
+    public function toMap()
+    {
+        if ($this->validate()) {
+            return [
+                'id' => $this->getId(),
+                'alias' => $this->getAlias(),
+            ];
+        }
 
-		return [];
-	}
+        return [];
+    }
 }

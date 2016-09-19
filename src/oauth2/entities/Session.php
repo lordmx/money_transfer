@@ -13,167 +13,167 @@ use entities\Entity;
  */
 class Session extends AbstractEntity implements Entity
 {
-	/**
-	 * @var int
-	 */
-	private $id;
+    /**
+     * @var int
+     */
+    private $id;
 
-	/**
-	 * Строковой идентификатор сессии
-	 *
-	 * @var string
-	 */
-	private $hash;
+    /**
+     * Строковой идентификатор сессии
+     *
+     * @var string
+     */
+    private $hash;
 
-	/**
-	 * @var \DateTime
-	 */
-	private $createdAt;
+    /**
+     * @var \DateTime
+     */
+    private $createdAt;
 
-	/**
-	 * @var User
-	 */
-	private $user;
+    /**
+     * @var User
+     */
+    private $user;
 
-	/**
-	 * Набор разрешений, доступных пользователю
-	 *
-	 * @var Scope[]
-	 */
-	private $scopes = [];
+    /**
+     * Набор разрешений, доступных пользователю
+     *
+     * @var Scope[]
+     */
+    private $scopes = [];
 
-	/**
-	 * @inheritdoc
-	 */
-	public function validate()
-	{
-		if (!$this->hash) {
-			$this->errors[] = 'Hash is empty or missing';
-		}
+    /**
+     * @inheritdoc
+     */
+    public function validate()
+    {
+        if (!$this->hash) {
+            $this->errors[] = 'Hash is empty or missing';
+        }
 
-		if (!$this->createdAt) {
-			$this->errors[] = 'Date of creation must be specified';
-		}
+        if (!$this->createdAt) {
+            $this->errors[] = 'Date of creation must be specified';
+        }
 
-		if (!$this->user) {
-			$this->errors[] = 'User is empty or missing';
-		}
+        if (!$this->user) {
+            $this->errors[] = 'User is empty or missing';
+        }
 
-		return empty($this->errors);
-	}
+        return empty($this->errors);
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getHash()
-	{
-		return $this->hash;
-	}
+    /**
+     * @return string
+     */
+    public function getHash()
+    {
+        return $this->hash;
+    }
 
-	/**
-	 * @return \DateTime
-	 */
-	public function getCreatedAt()
-	{
-		return $this->createdAt;
-	}
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
 
-	/**
-	 * @return User
-	 */
-	public function getUser()
-	{
-		return $this->user;
-	}
+    /**
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
 
-	/**
-	 * @return Scope[]
-	 */
-	public function getScopes()
-	{
-		return $this->scopes;
-	}
+    /**
+     * @return Scope[]
+     */
+    public function getScopes()
+    {
+        return $this->scopes;
+    }
 
-	/**
-	 * @param int $id
-	 */
-	public function setId($id)
-	{
-		$this->id = $id;
-	}
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 
-	/**
-	 * @param string $hash
-	 */
-	public function setHash($hash)
-	{
-		$this->hash = $hash;
-	}
+    /**
+     * @param string $hash
+     */
+    public function setHash($hash)
+    {
+        $this->hash = $hash;
+    }
 
-	/**
-	 * @param \DateTime $createdAt
-	 */
-	public function setCreatedAt(\DateTime $createdAt)
-	{
-		$this->createdAt = $createdAt;
-	}
+    /**
+     * @param \DateTime $createdAt
+     */
+    public function setCreatedAt(\DateTime $createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
 
-	/**
-	 * @param User $user
-	 */
-	public function setUser(User $user)
-	{
-		$this->user = $user;
-	}
+    /**
+     * @param User $user
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+    }
 
-	/**
-	 * @param Scope[] $scopes
-	 */
-	public function setScopes(array $scopes)
-	{
-		$this->scopes = $scopes;
-	}
+    /**
+     * @param Scope[] $scopes
+     */
+    public function setScopes(array $scopes)
+    {
+        $this->scopes = $scopes;
+    }
 
-	/**
-	 * @param array $map
-	 */
-	public function load(array $map)
-	{
-		if (isset($map['id'])) {
-			$this->setId((int)$map['id']);
-		}
+    /**
+     * @param array $map
+     */
+    public function load(array $map)
+    {
+        if (isset($map['id'])) {
+            $this->setId((int)$map['id']);
+        }
 
-		if (isset($map['hash'])) {
-			$this->setHash($map['hash']);
-		}
+        if (isset($map['hash'])) {
+            $this->setHash($map['hash']);
+        }
 
-		if (isset($map['createdAt'])) {
-			$this->setCreatedAt(new \DateTime($map['createdAt']));
-		}
-	}
+        if (isset($map['createdAt'])) {
+            $this->setCreatedAt(new \DateTime($map['createdAt']));
+        }
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function toMap()
-	{
-		if ($this->validate()) {
-			return [
-				'id' => $this->getId(),
-				'createdAt' => $this->getCreatedAt()->format(DATE_W3C),
-				'hash' => $this->getHash(),
-				'userId' => $this->getUser()->getId(),
-			];
-		}
+    /**
+     * @inheritdoc
+     */
+    public function toMap()
+    {
+        if ($this->validate()) {
+            return [
+                'id' => $this->getId(),
+                'createdAt' => $this->getCreatedAt()->format(DATE_W3C),
+                'hash' => $this->getHash(),
+                'userId' => $this->getUser()->getId(),
+            ];
+        }
 
-		return [];
-	}
+        return [];
+    }
 }

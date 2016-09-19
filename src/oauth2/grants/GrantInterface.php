@@ -11,11 +11,11 @@ use oauth2\entities\Session;
  */
 interface GrantInterface
 {
-	/**
-	 * Авторизовать пользователя и создать сессию через токен доступа
-	 *
-	 * @param string $token
-	 * @return Session
-	 */
-	public function createSession($token);
+    /**
+     * Авторизовать пользователя и создать сессию через токен доступа
+     *
+     * @param string $token
+     * @return Session
+     */
+    public function createSession($token);
 }

@@ -1,3 +1,4 @@
+.idea
 vendor
 logs
 migrations/.migrations.log

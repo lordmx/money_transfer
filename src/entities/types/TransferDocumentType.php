@@ -26,188 +26,188 @@ use dto\TransferDto;
  */
 class TransferDocumentType implements DocumentType
 {
-	/**
-	 * @var TransactionRepository
-	 */
-	private $transactionRepository;
+    /**
+     * @var TransactionRepository
+     */
+    private $transactionRepository;
 
-	/**
-	 * @var PaymentRuleRepository
-	 */
-	private $paymentRuleRepository;
+    /**
+     * @var PaymentRuleRepository
+     */
+    private $paymentRuleRepository;
 
-	/**
-	 * @var UserRepository
-	 */
-	private $userRepository;
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
 
-	/**
-	 * @var BalanceService
-	 */
-	private $balanceService;
+    /**
+     * @var BalanceService
+     */
+    private $balanceService;
 
-	/**
-	 * @var ExchangeService
-	 */
-	private $exchangeService;
+    /**
+     * @var ExchangeService
+     */
+    private $exchangeService;
 
-	/**
-	 * @param TransactionRepository $transactionRepository
-	 * @param PaymentRuleRepository $paymentRuleRepository
-	 * @param UserRepository $userRepository
-	 * @param BalanceService $balanceService
-	 * @param ExchangeService $exchangeService
-	 */
-	public function __construct(
-		TransactionRepository $transactionRepository,
-		PaymentRuleRepository $paymentRuleRepository,
-		UserRepository $userRepository,
-		BalanceService $balanceService,
-		ExchangeService $exchangeService
-	) {
-		$this->transactionRepository = $transactionRepository;
-		$this->paymentRuleRepository = $paymentRuleRepository;
-		$this->userRepository = $userRepository;
-		$this->balanceService = $balanceService;
-		$this->exchangeService = $exchangeService;
-	}
+    /**
+     * @param TransactionRepository $transactionRepository
+     * @param PaymentRuleRepository $paymentRuleRepository
+     * @param UserRepository $userRepository
+     * @param BalanceService $balanceService
+     * @param ExchangeService $exchangeService
+     */
+    public function __construct(
+        TransactionRepository $transactionRepository,
+        PaymentRuleRepository $paymentRuleRepository,
+        UserRepository $userRepository,
+        BalanceService $balanceService,
+        ExchangeService $exchangeService
+    ) {
+        $this->transactionRepository = $transactionRepository;
+        $this->paymentRuleRepository = $paymentRuleRepository;
+        $this->userRepository = $userRepository;
+        $this->balanceService = $balanceService;
+        $this->exchangeService = $exchangeService;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getName()
-	{
-		return Document::TYPE_TRANSFER;
-	}
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return Document::TYPE_TRANSFER;
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function initContext(Document $document, DtoInterface $dto)
-	{
-		$document->initContext($dto->toMap());
-	}
+    /**
+     * @inheritdoc
+     */
+    public function initContext(Document $document, DtoInterface $dto)
+    {
+        $document->initContext($dto->toMap());
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function forward(Document $document, User $user)
-	{
-		$context = $document->getContext();
+    /**
+     * @inheritdoc
+     */
+    public function forward(Document $document, User $user)
+    {
+        $context = $document->getContext();
 
-		try {
-			$dto = TransferDto::fromMap($context);
-		} catch (\Exception $e) {
-			$document->markAsError($user, $e->getMessage());
-			return $document;
-		}
+        try {
+            $dto = TransferDto::fromMap($context);
+        } catch (\Exception $e) {
+            $document->markAsError($user, $e->getMessage());
+            return $document;
+        }
 
-		// пытаем найти платежное правило для пары кошельков
-		$paymentRule = $this->paymentRuleRepository->findByWalletIds(
-			$dto->getSourceWalletId(),
-			$dto->getTargetWalletId()
-		);
+        // пытаем найти платежное правило для пары кошельков
+        $paymentRule = $this->paymentRuleRepository->findByWalletIds(
+            $dto->getSourceWalletId(),
+            $dto->getTargetWalletId()
+        );
 
-		if (!$paymentRule) {
-			$document->markAsError($user, 'No any rule for transfer money from wallet to wallet');
-			return $document;
-		}
+        if (!$paymentRule) {
+            $document->markAsError($user, 'No any rule for transfer money from wallet to wallet');
+            return $document;
+        }
 
-		$amount = $dto->getAmount();
+        $amount = $dto->getAmount();
 
-		if ($paymentRule->getMaxAmount() && $amount >= $paymentRule->getMaxAmount()) {
-			$document->markAsError($user, 'Amount must be lesser than ' . $paymentRule->getMaxAmount());
-			return $document;
-		}
+        if ($paymentRule->getMaxAmount() && $amount >= $paymentRule->getMaxAmount()) {
+            $document->markAsError($user, 'Amount must be lesser than ' . $paymentRule->getMaxAmount());
+            return $document;
+        }
 
-		if ($paymentRule->getMinAmount() && $amount <= $paymentRule->getMinAmount()) {
-			$document->markAsError($user, 'Amount must be greater than ' . $paymentRule->getMinAmount());
-			return $document;
-		}
+        if ($paymentRule->getMinAmount() && $amount <= $paymentRule->getMinAmount()) {
+            $document->markAsError($user, 'Amount must be greater than ' . $paymentRule->getMinAmount());
+            return $document;
+        }
 
-		$sourceUser = $this->userRepository->findById($dto->getSourceUserId());
+        $sourceUser = $this->userRepository->findById($dto->getSourceUserId());
 
-		if (!$sourceUser) {
-			$document->markAsError($user, 'Wrong source user given');
-			return $document;
-		}
+        if (!$sourceUser) {
+            $document->markAsError($user, 'Wrong source user given');
+            return $document;
+        }
 
-		$targetUser = $this->userRepository->findById($dto->getTargetUserId());
+        $targetUser = $this->userRepository->findById($dto->getTargetUserId());
 
-		if (!$targetUser) {
-			$document->markAsError($user, 'Wrong target user given');
-			return $document;
-		}
+        if (!$targetUser) {
+            $document->markAsError($user, 'Wrong target user given');
+            return $document;
+        }
 
-		if ($sourceUser->getId() == $targetUser->getId()) {
-			$document->markAsError($user, 'Source user and target user should not be equals');
-			return $document;
-		}
+        if ($sourceUser->getId() == $targetUser->getId()) {
+            $document->markAsError($user, 'Source user and target user should not be equals');
+            return $document;
+        }
 
-		$balance = $this->balanceService->getBalanceFor($sourceUser, $paymentRule->getSourceWallet());
+        $balance = $this->balanceService->getBalanceFor($sourceUser, $paymentRule->getSourceWallet());
 
-		if ($amount > $balance) {
-			$document->markAsError($user, 'Insufficient funds');
-			return $document;
-		}
+        if ($amount > $balance) {
+            $document->markAsError($user, 'Insufficient funds');
+            return $document;
+        }
 
-		$totalAmount = $amount;
+        $totalAmount = $amount;
 
-		// если платежным правилом определена комиссия, то считаем ее сверху суммы списания
-		if ($paymentRule->getCommission()) {
-			$totalAmount *= (1 + $paymentRule->getCommission() / 100);
-		}
+        // если платежным правилом определена комиссия, то считаем ее сверху суммы списания
+        if ($paymentRule->getCommission()) {
+            $totalAmount *= (1 + $paymentRule->getCommission() / 100);
+        }
 
-		$targetAmount = $amount;
+        $targetAmount = $amount;
 
-		// если платежным правилом определен кросс-курс для операции, то используем его для получения суммы зачисления,
-		// иначе получаем сумму через сервис валютных курсов (который для не мультивалютных операций вернет исходную сумму,
-		// а для мультивалютных вычислит сумму с использованием заданного курса)
-		if ($paymentRule->getCrossRate()) {
-			$targetAmount *= $paymentRule->getCrossRate();
-		} else {
-			$targetAmount = $this->exchangeService->calc(
-				$paymentRule->getSourceWallet()->getCurrencyId(),
-				$paymentRule->getTargetWallet()->getCurrencyId(),
-				$amount
-			);
-		}
+        // если платежным правилом определен кросс-курс для операции, то используем его для получения суммы зачисления,
+        // иначе получаем сумму через сервис валютных курсов (который для не мультивалютных операций вернет исходную сумму,
+        // а для мультивалютных вычислит сумму с использованием заданного курса)
+        if ($paymentRule->getCrossRate()) {
+            $targetAmount *= $paymentRule->getCrossRate();
+        } else {
+            $targetAmount = $this->exchangeService->calc(
+                $paymentRule->getSourceWallet()->getCurrencyId(),
+                $paymentRule->getTargetWallet()->getCurrencyId(),
+                $amount
+            );
+        }
 
-		// создаем движения для исходного пользователя и кошелька
-		$sourceTransaction = new Transaction();
-		$sourceTransaction->setDocument($document);
-		$sourceTransaction->setWallet($paymentRule->getSourceWallet());
-		$sourceTransaction->setUser($sourceUser);
-		$sourceTransaction->setCreatedAt(new \DateTime());
-		$sourceTransaction->setAmount(-$totalAmount);
-		$this->transactionRepository->save($sourceTransaction);
+        // создаем движения для исходного пользователя и кошелька
+        $sourceTransaction = new Transaction();
+        $sourceTransaction->setDocument($document);
+        $sourceTransaction->setWallet($paymentRule->getSourceWallet());
+        $sourceTransaction->setUser($sourceUser);
+        $sourceTransaction->setCreatedAt(new \DateTime());
+        $sourceTransaction->setAmount(-$totalAmount);
+        $this->transactionRepository->save($sourceTransaction);
 
-		// создаем движения для целевого пользователя и кошелька
-		$targetTransaction = new Transaction();
-		$targetTransaction->setDocument($document);
-		$targetTransaction->setWallet($paymentRule->getTargetWallet());
-		$targetTransaction->setUser($targetUser);
-		$targetTransaction->setCreatedAt(new \DateTime());
-		$targetTransaction->setAmount($targetAmount);
-		$this->transactionRepository->save($targetTransaction);
+        // создаем движения для целевого пользователя и кошелька
+        $targetTransaction = new Transaction();
+        $targetTransaction->setDocument($document);
+        $targetTransaction->setWallet($paymentRule->getTargetWallet());
+        $targetTransaction->setUser($targetUser);
+        $targetTransaction->setCreatedAt(new \DateTime());
+        $targetTransaction->setAmount($targetAmount);
+        $this->transactionRepository->save($targetTransaction);
 
-		// помечаем документ как исполненный
-		$document->markAsCompleted($user);
-	}
+        // помечаем документ как исполненный
+        $document->markAsCompleted($user);
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function backward(Document $document)
-	{
-		// Получаем движения по кошелькам, связанные с данным документом и удаляем их
-		foreach ($this->transactionRepository->findByDocument($document) as $transaction) {
-			$this->transactionRepository->delete($transaction);
-		}
+    /**
+     * @inheritdoc
+     */
+    public function backward(Document $document)
+    {
+        // Получаем движения по кошелькам, связанные с данным документом и удаляем их
+        foreach ($this->transactionRepository->findByDocument($document) as $transaction) {
+            $this->transactionRepository->delete($transaction);
+        }
 
-		// помечаем документ доступ для последующего выполнения
-		$document->markAsCreated();
+        // помечаем документ доступ для последующего выполнения
+        $document->markAsCreated();
 
-		return $document;
-	}
+        return $document;
+    }
 }

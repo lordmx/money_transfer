@@ -6,5 +6,5 @@ use exceptions\BaseException;
 
 class IntegrityException extends BaseException
 {
-	
+
 }
