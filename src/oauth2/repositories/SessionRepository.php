@@ -36,6 +36,8 @@ class SessionRepository extends AbstractRepository implements RepositoryInterfac
 
     /**
      * @param GatewayInterface $gateway
+     * @param UserScopeGateway $userScopeGateway
+     * @param ScopeRepository $scopeRepository
      * @param UserRepository $userRepository
      */
     public function __construct(

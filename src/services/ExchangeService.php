@@ -37,7 +37,7 @@ class ExchangeService
         $exchange = $this->exchangeRepository->findByPair($sourceId, $targetId);
 
         if (!$exchange) {
-            return $rate;
+            return $exchange;
         }
 
         return $exchange->calc($amount);

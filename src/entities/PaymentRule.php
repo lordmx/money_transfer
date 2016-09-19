@@ -27,7 +27,7 @@ class PaymentRule extends AbstractEntity implements Entity
     /**
      * @var Wallet
      */
-    private $souceWallet;
+    private $sourceWallet;
 
     /**
      * @var Wallet

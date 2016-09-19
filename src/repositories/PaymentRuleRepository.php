@@ -21,9 +21,9 @@ class PaymentRuleRepository extends AbstractRepository implements RepositoryInte
 
     /**
      * @param GatewayInterface $gateway
-     * @param WalletReposition $walletRepository
+     * @param WalletRepository $walletRepository
      */
-    public function __construct(GatewayInterface $gateway, walletRepository $walletRepository)
+    public function __construct(GatewayInterface $gateway, WalletRepository $walletRepository)
     {
         parent::__construct($gateway);
 

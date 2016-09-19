@@ -2,6 +2,11 @@
 
 namespace entities;
 
+/**
+ * Реализация абстрактной сущности предметной области
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 abstract class AbstractEntity
 {
     /**
@@ -31,7 +36,7 @@ abstract class AbstractEntity
     }
 
     /**
-     * @return $array
+     * @return array
      */
     public function getDirty()
     {

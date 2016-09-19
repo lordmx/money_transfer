@@ -168,6 +168,7 @@ abstract class AbstractRepository
 
     /**
      * @param Entity $entity
+     * @return Entity
      */
     public function delete(Entity $entity)
     {

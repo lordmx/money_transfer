@@ -71,7 +71,6 @@ class UserHistoryHandler extends AbstractHandler implements HandlerInterface
             $dateTo = $request->get('date_to');
             $limit = (int)$request->get('limit', 10);
             $offset = (int)$request->get('offset', 0);
-            $result = [];
 
             $dto = new HistoryDto();
             $dto->setUserId($user->getId());

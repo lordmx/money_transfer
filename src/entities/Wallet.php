@@ -2,6 +2,11 @@
 
 namespace entities;
 
+/**
+ * Кошелек системы, необходим для разграничения движения средств и организации мультивалюты
+ *
+ * @author Ilya Kolesnikov <fatumm@gmail.com>
+ */
 class Wallet extends AbstractEntity implements Entity
 {
     /**

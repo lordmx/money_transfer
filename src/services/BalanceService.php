@@ -31,6 +31,7 @@ class BalanceService
      *
      * @param User $user
      * @param Wallet $wallet
+     * @return float
      */
     public function getBalanceFor(User $user, Wallet $wallet)
     {

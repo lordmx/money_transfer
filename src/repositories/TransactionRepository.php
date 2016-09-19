@@ -35,7 +35,7 @@ class TransactionRepository extends AbstractRepository implements RepositoryInte
     /**
      * @param GatewayInterface $gateway
      * @param UserRepository $userRepository
-     * @param WalletRepository $paymentRuleRepository
+     * @param WalletRepository $walletRepository
      * @param DocumentRepository $documentRepository
      */
     public function __construct(

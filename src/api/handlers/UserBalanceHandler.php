@@ -60,7 +60,6 @@ class UserBalanceHandler extends AbstractHandler implements HandlerInterface
             $di = $handler->getContainer();
             $user  = $handler->getUser();
 
-            $count = 0;
             $walletId = $request->get('wallet_id');
             $limit = (int)$request->get('limit', 10);
             $offset = (int)$request->get('offset', 0);

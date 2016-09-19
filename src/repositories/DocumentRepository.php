@@ -105,7 +105,7 @@ class DocumentRepository extends AbstractRepository implements RepositoryInterfa
     }
 
     /**
-     * @param int $id
+     * @param int $userId
      * @return User
      * @throws IntegrityException
      */

@@ -152,6 +152,7 @@ abstract class AbstractGateway
     }
 
     /**
+     * @param array $data
      * @return array
      */
     protected function map($data)
@@ -166,6 +167,7 @@ abstract class AbstractGateway
     }
 
     /**
+     * @param array $data
      * @return array
      */
     protected function unmap($data)

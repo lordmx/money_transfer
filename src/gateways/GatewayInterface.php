@@ -2,8 +2,6 @@
 
 namespace gateways;
 
-use entities\entity;
-
 /**
  * Интерфейс шлюза таблицы БД
  *
